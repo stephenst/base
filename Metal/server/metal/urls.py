@@ -26,6 +26,10 @@ from . import views
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
+urlpatterns = [
+    url(r'^$',views.index),
+    url(r'run', views.run_model),
+]
 router.register(r'users', views.UserViewSet, base_name='users')
 router.register(r'perspectives', views.PerspectiveViewSet, base_name='perspectives')
 router.register(r'scenarios', views.ScenarioViewSet, base_name='scenarios')
@@ -36,6 +40,7 @@ router.register(r'time_to_failure_distributions', views.TimeToFailureDistributio
 
 urlpatterns = [
     url(r'^$',views.index),
-#    url(r'run', views.run_model),
+    url(r'run', views.run_model),
 ]
+
 urlpatterns += router.urls
