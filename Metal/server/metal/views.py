@@ -1,11 +1,47 @@
+# ******************************************************************************
+#
+#   File:   metal/views.py
+#   Rev:    a-1
+#   Date:   07/14/2017
+#
+#   Developed for the U.S. Government under contract(s):
+#           HR001117C0099
+#
+# ******************************************************************************
+#
+#   View set definitions for models
+#
+# ******************************************************************************
+#
+#   Modification Log:
+#
+#   a-1:    07/14/2017  pcharasala
+#           : Initial version
+#
+# ******************************************************************************
+
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.http import Http404
 from .models import Perspective
+from .models import Scenario
+from .models import Site
+from .models import Resource
+from .models import Asset
+from .models import AssetResource
+from .models import TimeToFailureDistribution
+
 
 from .serializers import UserSerializer
 from .serializers import PerspectiveSerializer
+from .serializers import ScenarioSerializer
+from .serializers import SiteSerializer
+from .serializers import ResourceSerializer
+from .serializers import AssetSerializer
+from .serializers import AssetResourceSerializer
+from .serializers import TimeToFailureDistributionSerializer
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -105,6 +141,37 @@ class PerspectivesList(APIView):
         perspective.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 class PerspectiveViewSet(viewsets.ModelViewSet):
     serializer_class = PerspectiveSerializer
     queryset = Perspective.objects.all()
+
+
+class ScenarioViewSet(viewsets.ModelViewSet):
+    serializer_class = ScenarioSerializer
+    queryset = Scenario.objects.all()
+
+
+class ResourceViewSet(viewsets.ModelViewSet):
+    serializer_class = ResourceSerializer
+    queryset = Resource.objects.all()
+
+
+class SiteViewSet(viewsets.ModelViewSet):
+    serializer_class = SiteSerializer
+    queryset = Site.objects.all()
+
+
+class AssetViewSet(viewsets.ModelViewSet):
+    serializer_class = AssetSerializer
+    queryset = Asset.objects.all()
+
+
+class AssetResourceViewSet(viewsets.ModelViewSet):
+    serializer_class = AssetResourceSerializer
+    queryset = AssetResource.objects.all()
+
+
+class TimeToFailureDistributionViewSet(viewsets.ModelViewSet):
+    serializer_class = TimeToFailureDistributionSerializer
+    queryset = TimeToFailureDistribution.objects.all()

@@ -1,16 +1,1 @@
-<div ng-controller="StockController">
 
-  <!--  Stock:
-     <div ng-repeat="stock in stocks">
-          <div style="margin-left: 20px;">
-              Ticker: {{ stock.ticker }} <br/>
-              Open: {{ stock.open }} <br/>
-              Close: {{ stock.close }} <br/>
-              Volume: {{ stock.volume }} <br/>
-              <hr/>
-          </div>
-      </div> -->
-
-      <nvd3 options="options" data="data"></nvd3>
-
-</div>
