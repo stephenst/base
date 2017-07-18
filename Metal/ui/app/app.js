@@ -19,6 +19,9 @@ angular.module('metal', [
   'widgets',
   'scenario',
   'ngResource'
-]);
+])
+    .run(function($rootScope){
+      $rootScope.viewer = new Cesium.Viewer('cesiumContainer');
+    });
 
 

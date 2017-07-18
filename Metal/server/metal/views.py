@@ -100,6 +100,58 @@ def index(request):
     return HttpResponse(outstring)
 
 
+def build_scenarios():
+
+    import os
+    import json
+
+    scenario_dir = os.path.expanduser("~/metal_scenarios")
+    # Get the list of scenarios in the database
+    scenario_list = Scenario.objects.all()
+
+    # Return list of directories in the scenario directory
+    scenario_files = os.listdir(scenario_dir)
+    for file in scenario_files:
+        if file.endswith(".json"):
+            # This file is a potential scenario file, see if it has been previously loaded
+            fullfilename = os.path.join(scenario_dir, file)
+
+            file_modified_time = os.path.getmtime(fullfilename)
+            found_in_database = False
+            for scenario in scenario_list:
+                if scenario.file_name == fullfilename:
+                    print("Scenario found in database")
+                    found_in_database = True
+                    if file_modified_time > scenario.date_modified:
+                        # The file is more recent than the database entry
+                        print("Data file is newer than database entry")
+                        scenario.date_modified = file_modified_time
+                        json_string = open(fullfilename, 'r').read()
+                        scenario.json_file = json_string
+                        data = json.loads(json_string)
+                        scenario.name = data["name"]
+                        scenario.file_name = fullfilename
+                        scenario.save()
+                        break
+
+            if not found_in_database:
+                print("This is a new file")
+                json_string = open(fullfilename, 'r').read()
+                data = json.loads(json_string)
+                scenario = Scenario(name=data["name"],
+                                    json_file=json_string,
+                                    file_name=fullfilename,
+                                    date_modified=file_modified_time)
+                scenario.save()
+
+    scenario_list = Scenario.objects.all()
+    outstring = ""
+    for scenario in scenario_list:
+        outstring += scenario.name + ", " + scenario.file_name + ', ' + str(scenario.date_modified) + '\n'
+
+    return HttpResponse(outstring)
+
+
 def run_model(request):
 
     import json
@@ -344,8 +396,20 @@ class PerspectiveViewSet(viewsets.ModelViewSet):
 
 
 class ScenarioViewSet(viewsets.ModelViewSet):
+    build_scenarios()
     serializer_class = ScenarioSerializer
     queryset = Scenario.objects.all()
+
+
+class ScenarioVewSet2(viewsets.ViewSet)  :
+    """
+    Viewset that calls index view too
+    """
+    def list(selfself, request):
+        index(request)
+        queryset = Scenario.objects.all()
+        serializer = ScenarioSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class ResourceViewSet(viewsets.ModelViewSet):
