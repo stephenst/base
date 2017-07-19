@@ -19,41 +19,43 @@
   <style type="text/css">
         .jqx-layout-group-auto-hide-content-vertical
         {
-            width: 200px;
+            width: 400px;
         }
     </style>
 </head>
 <body>
-<!--
-<div class="topnav" id="metalTopnav">
-  <a class="items" href="#home">Home</a>
-  <a class="items" href="#news">News</a>
-  <a class="items" href="#contact">Contact</a>
-  <a class="items" href="#about">About</a>
-  <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="showMenu()">&#9776;</a>
-</div>
--->
-
 
   <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
   <![endif]-->
-<div ng-controller="ScenarioController">
-    <div class="topnav" id="metalTopnav" onmouseover="showMetalMenu()" onmouseout="hideMetalMenu()">
-        <a class="items" ng-repeat="scenario in scenarios" href="#{{ scenario.file_name }}">{{ scenario.name }}</a>
-      <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="showMenu()">&#9776;</a>
+<div>
+    <div ui-view="primary.nav"></div>
+    <div ng-controller="StockController">
+    <button id="exportBtn" ng-click="export($event)" style="float: right; position: relative; padding-right: 10px;"> Save </button>
+     <button id="importBtn" ng-click="import($event)" style="display:none"> Import </button>
+</div>
+    <div id="docking">
+        <div>
+            <div id="cesium_window">
+                <div>Cesium</div>
+                <div id="cesiumContainer" ></div>
+            </div>
+            <div id="graph_window">
+            <div>Graph</div>
+            <div ng-controller="BoxPlotController">
+                <nvd3 options="options" data="data" class="with-3d-shadow with-transitions"></nvd3>
+             </div>
+         </div>
+        </div>
     </div>
 </div>
 
   <!-- <div ng-view></div> -->
    <!-- The dynamic templates will be served within this div -->
- <ui-view></ui-view>
+ <!-- <ui-view></ui-view> -->
 
 <!--
-<div ng-controller="StockController">
-    <button id="exportBtn" ng-click="export($event)" > Save </button>
-     <button id="importBtn" ng-click="import($event)" style="display: none"> Import </button>
-</div>
+
 
  <div id="docking">
     <div>
@@ -158,44 +160,20 @@
     <script src="components/scenario/services/scenario.service.js"></script>
 
     <script type="text/javascript">
-       /* $(document).ready(function () {
+       $(document).ready(function () {
             // Create jqxDocking
             $("#docking").jqxDocking({ width: 250, theme: 'classic' });
             $("#importBtn").click();
-        }); */
+        });
     </script>
 
-<script>
-  /*  $("metalTopnav").onmouseover(funtion(){
-        this.className += " responsive";
-    });
-    $("metalTopnav").onmouseout(funtion(){
-       this.className = "topnav ng-scope";
-    });*/
 
-function showMetalMenu(){
-    var x = document.getElementById("metalTopnav");
-    x.className += " responsive";
-}
-function hideMetalMenu(){
-    var x = document.getElementById("metalTopnav");
-    x.className =  "topnav ng-scope";
-}
-
-function showMenu() {
-    var x = document.getElementById("metalTopnav");
-    if (x.className === "topnav ng-scope") {
-        x.className += " responsive";
-    } else {
-        x.className = "topnav ng-scope";
-    }
-}
-</script>
 
 <script>
+
+//var viewer = new Cesium.Viewer('cesiumContainer');
+
 /*
-var viewer = new Cesium.Viewer('cesiumContainer');
-
 for (var i=0; i<metaldata.sites.length; i++) {
 var site = metaldata.sites[i];
 viewer.entities.add({

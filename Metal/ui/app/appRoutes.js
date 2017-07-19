@@ -7,12 +7,19 @@ angular
 
         $stateProvider.state({
         name: 'default',
-        url: '/',
-        templateUrl: 'components/charts/templates/line.html',
-        controller: 'LineController'
+        url: '',
+        //templateUrl: 'components/charts/templates/line.html',
+        //controller: 'LineController',
+            views: {
+            "primary.nav": {
+                templateUrl: 'components/scenario/templates/scenario.html',
+                controller: 'ScenarioController'
+            }
+        }
     });
     $stateProvider.state({
         name: 'stock',
+        parent: 'default',
         url: '/stock',
         templateUrl: 'components/stock/templates/stock.template',
         controller: 'StockController'
