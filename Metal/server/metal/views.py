@@ -39,8 +39,11 @@ from rest_framework.views import APIView
 
 from .models import Asset
 from .models import AssetResource
+from .models import AssetRouteAssignment
 from .models import Perspective
 from .models import Resource
+from .models import Route
+from .models import RouteSegment
 from .models import Scenario
 from .models import Site
 from .models import TimeToFailureDistribution
@@ -127,6 +130,17 @@ def run_model(request):
     for site in site_to_delete:
         site.delete()
 
+    routes_to_delete = Route.objects.filter(scenario=scenario)
+    for route in routes_to_delete:
+        route_segments_to_delete = RouteSegment.objects.filter(route=route)
+        for route_segment in route_segments_to_delete:
+            route_segment.delete()
+        route.delete()
+
+    asset_route_assignments_to_delete = AssetRouteAssignment.objects.filter(scenario=scenario)
+    for asset_route_assignment in asset_route_assignments_to_delete:
+        asset_route_assignment.delete()
+
     ttfdist_to_delete = TimeToFailureDistribution.objects.filter(scenario=scenario)
     for ttfdist in ttfdist_to_delete:
         ttfdist.delete()
@@ -177,11 +191,11 @@ def run_model(request):
     for site_dict in sites_raw:
         # FIXME - Note the input file permits multiple assets per site but now we are only taking one
         asset = Asset.objects.filter(name=(site_dict['needed_asset_types'])[0])
-        site  = Site(name=site_dict['name'],
-                     scenario=scenario,
-                     asset=asset[0],
-                     latitude=(site_dict['location'])[0],
-                     longitude=(site_dict['location'])[1])
+        site = Site(name=site_dict['name'],
+                    scenario=scenario,
+                    asset=asset[0],
+                    latitude=(site_dict['location'])[0],
+                    longitude=(site_dict['location'])[1])
         site.save()
 
     # budget_raw = scenario_pnode['budget']
@@ -191,11 +205,51 @@ def run_model(request):
     # Call GDA function to create model system
     model_system, model_route = gda_json.json_to_model_system(scenario.json_file)
 
+    # Create the model route and route segment tables
+    for route_dict in model_route.routes:
+        route = Route(scenario=scenario,
+                      name=route_dict['name'],
+                      distance=route_dict['total_dist'])
+        route.save()
+
+        route_segment_index = 0
+        for segment_dict in route_dict['segments']:
+            start_site = Site.objects.filter(name=segment_dict['points'][0])
+            end_site = Site.objects.filter(name=segment_dict['points'][1])
+            segment = RouteSegment(route=route,
+                                   index=route_segment_index,
+                                   start_latitude=start_site[0].latitude,
+                                   start_longitude=start_site[0].longitude,
+                                   end_latitude=end_site[0].latitude,
+                                   end_longitude=end_site[0].longitude,
+                                   distance=segment_dict['dist'])
+            segment.save()
+
     # Construct LP from model system and model routes
     gda_lp.assemble_problem(model_system, model_route)
 
     # Solve LP
     result = gda_lp.solve_LP_per_route(model_system, model_route)
+
+    composite_asset_list = model_system.assets
+    comp_asset_based_results = result.lp_res_counts_df
+    for df_index, row in comp_asset_based_results.iterrows():
+        if row['count'] > 0:
+            composite_asset_name = df_index[0]
+            route_name = df_index[1]
+            for comp_asset in composite_asset_list:
+                if comp_asset.symbol_composite == composite_asset_name:
+                    for asset_name in comp_asset.contains:
+                        asset_list = Asset.objects.filter(scenario=scenario, name=asset_name)
+                        route_list = Route.objects.filter(scenario=scenario, name=route_name)
+
+                        asset_route_assign = AssetRouteAssignment(scenario=scenario,
+                                                                  asset=asset_list[0],
+                                                                  route=route_list[0],
+                                                                  count=row['count'],
+                                                                  utilization=row['utilization'])
+                        asset_route_assign.save()
+                    break
 
     # FIXME - add a fake time to failure distribution until the model is updated
     ttfdist = TimeToFailureDistribution(scenario=scenario,
@@ -226,7 +280,7 @@ def print_database():
         for site in site_list:
             print("\tSite: ", site.name)
             print("\t\tLocation: ", site.latitude, ", ", site.longitude)
-            print("\t\tAsset:", (site.asset).name)
+            print("\t\tAsset:", site.asset.name)
 
         asset_list = Asset.objects.filter(scenario=scenario)
         for asset in asset_list:
@@ -241,12 +295,18 @@ def print_database():
                     print("\t\t\tContested Consumption:", asset_resource.consumption_capacity)
                     print("\t\t\tUncontested Consumption:", asset_resource.uncontested_consumption)
 
+        asset_route_assign_list = AssetRouteAssignment.objects.filter(scenario=scenario)
+        print("\tAsset Route Assignment")
+        for asset_route_assign in asset_route_assign_list:
+            print("\t\tAsset:", asset_route_assign.asset.name)
+            print("\t\tRoute:", asset_route_assign.route.name)
+            print("\t\tCount:", asset_route_assign.count)
+
         dist_list = TimeToFailureDistribution.objects.filter(scenario=scenario)
         for dist in dist_list:
             print("\tDistribution:")
             print("\t\tKey:", dist.key)
             print("\t\tData:", dist.data)
-
 
 
 class UserViewSet(viewsets.ViewSet):
