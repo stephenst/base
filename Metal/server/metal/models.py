@@ -77,8 +77,42 @@ class Site(models.Model):
         return self.name
 
 
+class Route(models.Model):
+    scenario = models.ForeignKey(Scenario, default='default', on_delete=models.CASCADE)
+    name = models.CharField(max_length=30, primary_key=True)
+    distance = models.FloatField()
+
+    def __str__(self):
+        return self.name
+
+
+class RouteSegment(models.Model):
+    route = models.ForeignKey(Route, default='default', on_delete=models.CASCADE)
+    index = models.IntegerField()
+    start_latitude = models.FloatField()
+    start_longitude = models.FloatField()
+    end_latitude = models.FloatField()
+    end_longitude = models.FloatField()
+    distance = models.FloatField()
+
+    def __str__(self):
+        return self.route.name + '-' + str(self.index)
+
+
+class AssetRouteAssignment(models.Model):
+    scenario = models.ForeignKey(Scenario, default='default', on_delete=models.CASCADE)
+    asset = models.ForeignKey(Asset, default='default', on_delete=models.CASCADE)
+    route = models.ForeignKey(Route, default='default', on_delete=models.CASCADE)
+    count = models.IntegerField()
+    utilization = models.FloatField()
+
+    def __str__(self):
+        return self.asset.name + '-' + self.route.name
+
+
 class TimeToFailureDistribution(models.Model):
-    scenario = models.OneToOneField(Scenario, related_name='time_to_failure_distributions', on_delete=models.CASCADE, unique=True)  # Primary and also Forien Key
+    scenario = models.OneToOneField(Scenario, related_name='time_to_failure_distributions',
+                                    on_delete=models.CASCADE, unique=True)  # Primary and also Forien Key
     key = models.CharField(max_length=50)
     data = models.TextField()
 
