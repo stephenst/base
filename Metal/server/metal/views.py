@@ -431,6 +431,12 @@ class ScenarioViewSet(viewsets.ModelViewSet):
             return run_model(scenario)
         return HttpResponse({})
 
+    @detail_route(methods=['get'], url_path='routes')
+    def get_routes(self, request, pk=None):
+        routes = Route.objects.filter(scenario=pk)
+        serializer = RouteSerializer(routes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class ScenarioVewSet2(viewsets.ViewSet):
     """
