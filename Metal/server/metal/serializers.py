@@ -55,6 +55,14 @@ class ScenarioSerializer(serializers.ModelSerializer):
         fields = ('name', 'file_name', 'json_file', 'date_modified', 'resources', 'sites')
 
 
+class ScenarioRoutesSerializer(serializers.ModelSerializer):
+    routes = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = Scenario
+        fields = ('name', 'routes')
+
+
 class ResourceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Resource
@@ -76,13 +84,7 @@ class SiteSerializer(serializers.ModelSerializer):
 class TimeToFailureDistributionSerializer(serializers.ModelSerializer):
     class Meta:
         model = TimeToFailureDistribution
-        fields = ('scenario', 'key', 'data', 'x-axis-label', 'y-axis-label')
-
-
-class RouteSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Route
-        fields = ('name', 'scenario', 'distance')
+        fields = ('scenario', 'key', 'data', 'x_axis_label', 'y_axis_label')
 
 
 class RouteSegmentSerializer(serializers.ModelSerializer):
@@ -90,6 +92,16 @@ class RouteSegmentSerializer(serializers.ModelSerializer):
         model = RouteSegment
         fields = ('id', 'route', 'start_latitude', 'start_longitude', 'end_latitude',
                   'end_longitude', 'distance')
+
+
+
+class RouteSerializer(serializers.ModelSerializer):
+    #route_segments = serializers.StringRelatedField(many=True)
+    route_segments = RouteSegmentSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Route
+        fields = ('name', 'scenario', 'distance', 'route_segments')
 
 
 class AssetRouteAssignmentSerializer(serializers.ModelSerializer):
