@@ -5,6 +5,7 @@ bower_components/
 tmp
 .DS_Store
 /Metal/server/metal/__pycache__/**
+/Metal/server/migrations/metal/__pycache__/**
 
 # Created by https://www.gitignore.io/api/pycharm+all
 
