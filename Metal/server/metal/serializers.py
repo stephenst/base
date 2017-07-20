@@ -46,18 +46,16 @@ class PerspectiveSerializer(serializers.ModelSerializer):
 class ScenarioSerializer(serializers.ModelSerializer):
     resources = serializers.StringRelatedField(many=True)
     sites = serializers.StringRelatedField(many=True)
-    time_to_failure_distributions = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = Scenario
-        fields = ('name', 'file_name', 'json_file', 'date_modified', 'resources', 'sites',
-                  'time_to_failure_distributions')
+        fields = ('name', 'file_name', 'json_file', 'date_modified', 'resources', 'sites')
 
 
 class ResourceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Resource
-        fields = ('name', 'file_name', 'json_file', 'date_modified')
+        fields = ('name', 'scenario')
 
 
 class AssetSerializer(serializers.ModelSerializer):

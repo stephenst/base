@@ -306,7 +306,7 @@ def run_model(request):
     # FIXME - add a fake time to failure distribution until the model is updated
     ttfdist = TimeToFailureDistribution(scenario=scenario,
                                         key=(scenario.name + "- Time to Failure Distribution"),
-                                        data='[{"label":"1", "value","0.0"},{"label":"2", "value","0.0"},{"label":"3", "value","0.0"},{"label":"4", "value","0.1"},{"label":"5", "value","0.15"},{"label":"6", "value","0.3"},{"label":"7", "value","0.25"},{"label":"8", "value","0.15"},{"label":"9", "value","0.05"},{"label":"10", "value","0.0"}]')
+                                        data='[{"label":"1", "value":"0.0"},{"label":"2", "value":"0.0"},{"label":"3", "value":"0.0"},{"label":"4", "value":"0.1"},{"label":"5", "value":"0.15"},{"label":"6", "value":"0.3"},{"label":"7", "value":"0.25"},{"label":"8", "value":"0.15"},{"label":"9", "value":"0.05"},{"label":"10", "value":"0.0"}]')
     ttfdist.save()
 
     print_database()

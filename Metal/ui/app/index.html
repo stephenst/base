@@ -23,28 +23,32 @@
         }
     </style>
 </head>
-<body>
+<body ng-controller="ScenarioController">
 
   <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
   <![endif]-->
 <div>
-    <div ui-view="primary.nav"></div>
-    <div ng-controller="StockController">
-    <button id="exportBtn" ng-click="export($event)" style="float: right; position: relative; padding-right: 10px;"> Save </button>
-     <button id="importBtn" ng-click="import($event)" style="display:none"> Import </button>
-</div>
+    <div class="dropdown">
+        <span>&#9776;</span>
+        <div class="dropdown-content">
+            <a ng-repeat="scenario in scenarios" href="javascript:void(0);" ng-click="getScenario(scenario.name)">{{ scenario.name }}</a>
+        </div>
+    </div>
+    <div>
+        <button id="exportBtn" ng-click="export($event)" style="float: right; position: relative; padding-right: 10px;"> Save </button>
+        <button id="importBtn" ng-click="import($event)" style="display:none"> Import </button>
+    </div>
     <div id="docking">
         <div>
             <div id="cesium_window">
                 <div>Cesium</div>
                 <div id="cesiumContainer" ></div>
             </div>
-            <div id="graph_window">
+           <div id="graph_window">
             <div>Graph</div>
-            <div ng-controller="BoxPlotController">
-                <nvd3 options="options" data="data" class="with-3d-shadow with-transitions"></nvd3>
-             </div>
+               <!-- <button id="clickme" ng-click="clickme()">Click Me</button> -->
+               <nvd3 options="options" data="data"  ></nvd3>
          </div>
         </div>
     </div>

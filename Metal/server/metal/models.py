@@ -111,8 +111,8 @@ class AssetRouteAssignment(models.Model):
 
 
 class TimeToFailureDistribution(models.Model):
-    scenario = models.OneToOneField(Scenario, related_name='time_to_failure_distributions',
-                                    on_delete=models.CASCADE, unique=True)  # Primary and also Forien Key
+    scenario = models.OneToOneField(Scenario,
+                                    on_delete=models.CASCADE, unique=True, primary_key=True)  # Primary and also Forien Key
     key = models.CharField(max_length=50)
     data = models.TextField()
 
