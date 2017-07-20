@@ -76,7 +76,7 @@ class SiteSerializer(serializers.ModelSerializer):
 class TimeToFailureDistributionSerializer(serializers.ModelSerializer):
     class Meta:
         model = TimeToFailureDistribution
-        fields = ('scenario', 'key', 'data')
+        fields = ('scenario', 'key', 'data', 'x-axis-label', 'y-axis-label')
 
 
 class RouteSerializer(serializers.ModelSerializer):
@@ -88,7 +88,8 @@ class RouteSerializer(serializers.ModelSerializer):
 class RouteSegmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = RouteSegment
-        fields = ('route', 'start_latitude', 'start_longitude', 'end_latitude', 'end_longitude', 'distance')
+        fields = ('id', 'route', 'start_latitude', 'start_longitude', 'end_latitude',
+                  'end_longitude', 'distance')
 
 
 class AssetRouteAssignmentSerializer(serializers.ModelSerializer):

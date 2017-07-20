@@ -26,7 +26,7 @@ from django.db import models
 
 class Scenario(models.Model):
     name = models.CharField(max_length=30, primary_key=True)
-    file_name = models.CharField(max_length=20)
+    file_name = models.TextField()
     json_file = models.TextField()
     date_modified = models.FloatField()
 
@@ -35,7 +35,9 @@ class Scenario(models.Model):
 
 
 class Resource(models.Model):
-    name = models.CharField(max_length=30, primary_key=True)
+    class Meta:
+        unique_together = ('name', 'scenario')
+    name = models.TextField()
     scenario = models.ForeignKey(Scenario, related_name='resources', default='default', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -43,7 +45,9 @@ class Resource(models.Model):
 
 
 class Asset(models.Model):
-    name = models.CharField(max_length=30, primary_key=True)
+    class Meta:
+        unique_together = ('name', 'scenario')
+    name = models.TextField()
     scenario = models.ForeignKey(Scenario, related_name='assets', default='default', on_delete=models.CASCADE)
     speed = models.FloatField()
 
@@ -67,7 +71,9 @@ class AssetResource(models.Model):
 
 
 class Site(models.Model):
-    name = models.CharField(max_length=30, primary_key=True)
+    class Meta:
+        unique_together = ('name', 'scenario')
+    name = models.TextField()
     scenario = models.ForeignKey(Scenario, related_name='sites', default='default', on_delete=models.CASCADE)
     asset = models.ForeignKey(Asset, related_name='sites', default='default', on_delete=models.CASCADE)
     latitude = models.FloatField()
@@ -78,8 +84,10 @@ class Site(models.Model):
 
 
 class Route(models.Model):
+    class Meta:
+        unique_together = ('name', 'scenario')
     scenario = models.ForeignKey(Scenario, related_name='routes', default='default', on_delete=models.CASCADE)
-    name = models.CharField(max_length=30, primary_key=True)
+    name = models.TextField()
     distance = models.FloatField()
 
     def __str__(self):
