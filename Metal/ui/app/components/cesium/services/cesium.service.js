@@ -4,7 +4,7 @@
 cesium
     .factory('CesiumFactory', function($resource) {
         return $resource(
-            'http://localhost:8070/metal/pie/:id/',
+            'http://localhost:8072/metal/pie/:id/',
             {},
             {
                 'query': {

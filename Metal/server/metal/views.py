@@ -23,7 +23,7 @@
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.http import Http404
-
+from rest_framework.decorators import detail_route
 
 from .serializers import ScenarioSerializer
 from .serializers import SiteSerializer
@@ -108,17 +108,11 @@ def build_scenarios():
     return HttpResponse(outstring)
 
 
-def run_model(request):
+def run_model(scenario):
 
     import json
     import json_to_model_system as gda_json
     import analyze_lp as gda_lp
-
-    # Get the first scenario from the database
-    scenario_list = Scenario.objects.all()
-
-    # FIXME - hard wired to select first scenario
-    scenario = scenario_list[0]
 
     # Delete all records associated with this scenario
     resources_to_delete = Resource.objects.filter(scenario=scenario)
@@ -429,6 +423,13 @@ class ScenarioViewSet(viewsets.ModelViewSet):
     build_scenarios()
     serializer_class = ScenarioSerializer
     queryset = Scenario.objects.all()
+
+    @detail_route(methods=['get'], url_path='run_model')
+    def run_model(self, request, pk=None):
+        scenario = Scenario.objects.filter(name=pk).first()
+        if(scenario != None):
+            return run_model(scenario)
+        return HttpResponse({})
 
 
 class ScenarioVewSet2(viewsets.ViewSet):

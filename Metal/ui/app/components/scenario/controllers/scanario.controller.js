@@ -6,6 +6,7 @@ scenario
     .controller('ScenarioController', ['$rootScope', '$scope', 'ScenarioFactory', 'LineFactory','PerspectiveFactory',
         function($rootScope, $scope, ScenarioFactory, LineFactory, PerspectiveFactory) {
 
+
         $scope.export = function(eventData) {
             console.log("Export button clicked");
             var jsondatastr = $('#docking').jqxDocking('exportLayout');
@@ -25,6 +26,12 @@ scenario
                 //console.log(data);
                 $scope.perspective = data;
                  $('#docking').jqxDocking('importLayout', data.jsondata);
+            });
+        };
+
+        $scope.run_model = function(scenarioName) {
+            ScenarioFactory.run({id: scenarioName}, function (data) {
+                console.log("model run for scenario:" + scenarioName);
             });
         };
 
@@ -62,6 +69,9 @@ scenario
         $scope.data = [];
 
         $scope.getScenario = function(scenarioName){
+
+            $scope.run_model(scenarioName);
+
              //$scope.data = [{ key: "Some key", values:[{"label":"77", "value":"22.0"}]}];
             ScenarioFactory.get({id:scenarioName}, function(data){
                 var jsonfileData = data.json_file;

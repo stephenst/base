@@ -4,7 +4,7 @@
 stock
     .factory('StockFactory', function($resource) {
         return $resource(
-            'http://localhost:8070/metal/stock/:id/',
+            'http://localhost:8072/metal/stock/:id/',
             {},
             {
                 'query': {
@@ -22,7 +22,7 @@ stock
     })
     .factory('PerspectiveFactory', function($resource){
         return $resource(
-            'http://localhost:8070/metal/perspectives/:id/',
+            'http://localhost:8072/metal/perspectives/:id/',
             {id: '@id'},
             {
                 query: {
