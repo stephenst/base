@@ -8,6 +8,7 @@ var boxplot = angular.module('boxplot', []);
 var cesium = angular.module('cesium', ['nvd3']);
 var widgets = angular.module('widgets', ["jqwidgets"]);
 var scenario = angular.module('scenario', []);
+var openlayers_dir = angular.module('openlayers_dir', ['openlayers-directive']);
 angular.module('metal', [
   'appRoutes',
   'nvd3',
@@ -18,10 +19,12 @@ angular.module('metal', [
   'cesium',
   'widgets',
   'scenario',
-  'ngResource'
+  'ngResource',
+    'openlayers_dir'
 ])
     .run(function($rootScope){
       $rootScope.viewer = new Cesium.Viewer('cesiumContainer');
+      $rootScope.server_port = '8070';
     });
 
 
