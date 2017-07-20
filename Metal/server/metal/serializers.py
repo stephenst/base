@@ -84,7 +84,7 @@ class SiteSerializer(serializers.ModelSerializer):
 class TimeToFailureDistributionSerializer(serializers.ModelSerializer):
     class Meta:
         model = TimeToFailureDistribution
-        fields = ('scenario', 'key', 'data', 'x-axis-label', 'y-axis-label')
+        fields = ('scenario', 'key', 'data', 'x_axis_label', 'y_axis_label')
 
 
 class RouteSegmentSerializer(serializers.ModelSerializer):

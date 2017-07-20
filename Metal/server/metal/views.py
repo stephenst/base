@@ -24,6 +24,7 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.http import Http404
 from rest_framework.decorators import detail_route
+from corsheaders import defaults
 
 from .serializers import ScenarioSerializer
 from .serializers import SiteSerializer
@@ -429,13 +430,19 @@ class ScenarioViewSet(viewsets.ModelViewSet):
         scenario = Scenario.objects.filter(name=pk).first()
         if(scenario != None):
             return run_model(scenario)
-        return HttpResponse({})
+        response = HttpResponse({})
+        response['Access-Control-Allow-Origin'] = 'http://localhost:8091'
+        response['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+        return response
 
     @detail_route(methods=['get'], url_path='routes')
     def get_routes(self, request, pk=None):
         routes = Route.objects.filter(scenario=pk)
         serializer = RouteSerializer(routes, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        response = Response(serializer.data, status=status.HTTP_200_OK)
+        response['Access-Control-Allow-Origin'] = 'http://localhost:8091'
+        response['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+        return response
 
 
 class ScenarioVewSet2(viewsets.ViewSet):
