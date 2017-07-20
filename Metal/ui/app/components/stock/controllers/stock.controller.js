@@ -4,10 +4,6 @@
 stock
     .controller('StockController', ['$scope', 'StockFactory', 'PerspectiveFactory', function($scope, StockFactory, PerspectiveFactory) {
 
-        StockFactory.query().$promise.then(function(data) {
-            $scope.stocks = data;
-        });
-
         $scope.export = function(eventData) {
             console.log("Export button clicked");
             var jsondatastr = $('#docking').jqxDocking('exportLayout');

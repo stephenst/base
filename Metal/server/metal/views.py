@@ -56,51 +56,7 @@ from .serializers import UserSerializer
 
 def index(request):
 
-    import os
-    import json
-
-    scenario_dir = os.path.expanduser("~/metal_scenarios")
-    # Get the list of scenarios in the database
-    scenario_list = Scenario.objects.all()
-
-    # Return list of directories in the scenario directory
-    scenario_files = os.listdir(scenario_dir)
-    for file in scenario_files:
-        if file.endswith(".json"):
-            # This file is a potential scenario file, see if it has been previously loaded
-            fullfilename = os.path.join(scenario_dir, file)
-
-            file_modified_time = os.path.getmtime(fullfilename)
-            found_in_database = False
-            for scenario in scenario_list:
-                if scenario.file_name == fullfilename:
-                    found_in_database = True
-                    if file_modified_time > scenario.date_modified:
-                        # The file is more recent than the database entry
-                        scenario.date_modified = file_modified_time
-                        json_string = open(fullfilename, 'r').read()
-                        scenario.json_file = json_string
-                        data = json.loads(json_string)
-                        scenario.name = data["name"]
-                        scenario.file_name = fullfilename
-                        scenario.save()
-                        break
-
-            if not found_in_database:
-                json_string = open(fullfilename, 'r').read()
-                data = json.loads(json_string)
-                scenario = Scenario(name=data["name"],
-                                    json_file=json_string,
-                                    file_name=fullfilename,
-                                    date_modified=file_modified_time)
-                scenario.save()
-
-    scenario_list = Scenario.objects.all()
-    outstring = ""
-    for scenario in scenario_list:
-        outstring += scenario.name + ", " + scenario.file_name + ', ' + str(scenario.date_modified) + '\n'
-
-    return HttpResponse(outstring)
+    return build_scenarios()
 
 
 def build_scenarios():
@@ -160,6 +116,8 @@ def run_model(request):
 
     # Get the first scenario from the database
     scenario_list = Scenario.objects.all()
+
+    # FIXME - hard wired to select first scenario
     scenario = scenario_list[0]
 
     # Delete all records associated with this scenario
@@ -303,7 +261,7 @@ def run_model(request):
                                         key=(scenario.name + "- Time to Failure Distribution"),
                                         x_axis_label='Days to Failure',
                                         y_axis_label='Probability',
-                                        data='[{"label":"1", "value","0.0"},{"label":"2", "value","0.0"},{"label":"3", "value","0.0"},{"label":"4", "value","0.1"},{"label":"5", "value","0.15"},{"label":"6", "value","0.3"},{"label":"7", "value","0.25"},{"label":"8", "value","0.15"},{"label":"9", "value","0.05"},{"label":"10", "value","0.0"}]')
+                                        data='[{"label":"1", "value":"0.0"},{"label":"2", "value":"0.0"},{"label":"3", "value":"0.0"},{"label":"4", "value":"0.1"},{"label":"5", "value":"0.15"},{"label":"6", "value":"0.3"},{"label":"7", "value":"0.25"},{"label":"8", "value":"0.15"},{"label":"9", "value":"0.05"},{"label":"10", "value":"0.0"}]')
     ttfdist.save()
 
     print_database()

@@ -42,4 +42,5 @@ urlpatterns = [
     url(r'run', views.run_model),
 ]
 
+
 urlpatterns += router.urls
