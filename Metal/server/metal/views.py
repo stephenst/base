@@ -464,7 +464,8 @@ class ScenarioViewSet(viewsets.ModelViewSet):
     def run_model(self, request, pk=None):
         scenario = Scenario.objects.filter(name=pk).first()
         if(scenario != None):
-            run_model(scenario)
+            return run_model(scenario)
+        return HttpResponse({})
 
 
 class ScenarioVewSet2(viewsets.ViewSet)  :
