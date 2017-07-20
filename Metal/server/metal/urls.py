@@ -36,7 +36,7 @@ router.register(r'time_to_failure_distributions', views.TimeToFailureDistributio
 
 urlpatterns = [
     url(r'^$',views.index),
-    url(r'run', views.run_model),
+    #url(r'run', views.run_model),
 ]
 
 
