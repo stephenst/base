@@ -31,6 +31,9 @@ router.register(r'perspectives', views.PerspectiveViewSet, base_name='perspectiv
 router.register(r'scenarios', views.ScenarioViewSet, base_name='scenarios')
 router.register(r'resources', views.ResourceViewSet, base_name='resources')
 router.register(r'assets', views.AssetViewSet, base_name='assets')
+router.register(r'routes', views.RouteViewSet, base_name='routes')
+router.register(r'routesegments', views.RouteSegmentViewSet, base_name='routesegments')
+router.register(r'assetrouteassignments', views.AssetRouteAssignmentViewSet, base_name='assetrouteassignments')
 router.register(r'time_to_failure_distributions', views.TimeToFailureDistributionViewSet,
                 base_name='time_to_failure_distributions')
 
