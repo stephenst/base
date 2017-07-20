@@ -258,7 +258,7 @@ def run_model(scenario):
                                         data='[{"label":"1", "value":"0.0"},{"label":"2", "value":"0.0"},{"label":"3", "value":"0.0"},{"label":"4", "value":"0.1"},{"label":"5", "value":"0.15"},{"label":"6", "value":"0.3"},{"label":"7", "value":"0.25"},{"label":"8", "value":"0.15"},{"label":"9", "value":"0.05"},{"label":"10", "value":"0.0"}]')
     ttfdist.save()
 
-    print_database()
+    # print_database()
 
     return HttpResponse(result)
 
@@ -289,7 +289,7 @@ def print_database():
             print("\t\tSpeed: ", asset.speed)
             for resource in resource_list:
                 asset_resource_list = AssetResource.objects.filter(asset=asset, resource=resource)
-                print("\t\tResource:")
+                print("\t\tResource:", resource.name)
                 for asset_resource in asset_resource_list:
                     print("\t\t\tConsumption Capacity:", asset_resource.consumption_capacity)
                     print("\t\t\tTransport Capacity:", asset_resource.transport_capacity)
