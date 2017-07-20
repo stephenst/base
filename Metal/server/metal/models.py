@@ -78,7 +78,7 @@ class Site(models.Model):
 
 
 class Route(models.Model):
-    scenario = models.ForeignKey(Scenario, default='default', on_delete=models.CASCADE)
+    scenario = models.ForeignKey(Scenario, related_name='routes', default='default', on_delete=models.CASCADE)
     name = models.CharField(max_length=30, primary_key=True)
     distance = models.FloatField()
 
@@ -87,8 +87,7 @@ class Route(models.Model):
 
 
 class RouteSegment(models.Model):
-    route = models.ForeignKey(Route, default='default', on_delete=models.CASCADE)
-    index = models.IntegerField()
+    route = models.ForeignKey(Route, related_name='route_segments', default='default', on_delete=models.CASCADE)
     start_latitude = models.FloatField()
     start_longitude = models.FloatField()
     end_latitude = models.FloatField()
@@ -96,13 +95,13 @@ class RouteSegment(models.Model):
     distance = models.FloatField()
 
     def __str__(self):
-        return self.route.name + '-' + str(self.index)
+        return self.route.name + '- segment ' + str(self.id)
 
 
 class AssetRouteAssignment(models.Model):
-    scenario = models.ForeignKey(Scenario, default='default', on_delete=models.CASCADE)
-    asset = models.ForeignKey(Asset, default='default', on_delete=models.CASCADE)
-    route = models.ForeignKey(Route, default='default', on_delete=models.CASCADE)
+    scenario = models.ForeignKey(Scenario, related_name='asset_route_assignments', default='default', on_delete=models.CASCADE)
+    asset = models.ForeignKey(Asset, related_name='asset_route_assignments', default='default', on_delete=models.CASCADE)
+    route = models.ForeignKey(Route, related_name='asset_route_assignments', default='default', on_delete=models.CASCADE)
     count = models.IntegerField()
     utilization = models.FloatField()
 
@@ -114,6 +113,8 @@ class TimeToFailureDistribution(models.Model):
     scenario = models.OneToOneField(Scenario,
                                     on_delete=models.CASCADE, unique=True, primary_key=True)  # Primary and also Forien Key
     key = models.CharField(max_length=50)
+    x_axis_label = models.CharField(max_length=30, default='default')
+    y_axis_label = models.CharField(max_length=30, default='default')
     data = models.TextField()
 
     def __str__(self):

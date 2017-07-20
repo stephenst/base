@@ -30,6 +30,9 @@ from .serializers import SiteSerializer
 from .serializers import ResourceSerializer
 from .serializers import AssetSerializer
 from .serializers import AssetResourceSerializer
+from .serializers import RouteSerializer
+from .serializers import RouteSegmentSerializer
+from .serializers import AssetRouteAssignmentSerializer
 from .serializers import TimeToFailureDistributionSerializer
 
 from rest_framework import status
@@ -53,54 +56,7 @@ from .serializers import UserSerializer
 
 def index(request):
 
-    import os
-    import json
-
-    scenario_dir = os.path.expanduser("~/metal_scenarios")
-    # Get the list of scenarios in the database
-    scenario_list = Scenario.objects.all()
-
-    # Return list of directories in the scenario directory
-    scenario_files = os.listdir(scenario_dir)
-    for file in scenario_files:
-        if file.endswith(".json"):
-            # This file is a potential scenario file, see if it has been previously loaded
-            fullfilename = os.path.join(scenario_dir, file)
-
-            file_modified_time = os.path.getmtime(fullfilename)
-            found_in_database = False
-            for scenario in scenario_list:
-                if scenario.file_name == fullfilename:
-                    print("Scenario found in database")
-                    found_in_database = True
-                    if file_modified_time > scenario.date_modified:
-                        # The file is more recent than the database entry
-                        print("Data file is newer than database entry")
-                        scenario.date_modified = file_modified_time
-                        json_string = open(fullfilename, 'r').read()
-                        scenario.json_file = json_string
-                        data = json.loads(json_string)
-                        scenario.name = data["name"]
-                        scenario.file_name = fullfilename
-                        scenario.save()
-                        break
-
-            if not found_in_database:
-                print("This is a new file")
-                json_string = open(fullfilename, 'r').read()
-                data = json.loads(json_string)
-                scenario = Scenario(name=data["name"],
-                                    json_file=json_string,
-                                    file_name=fullfilename,
-                                    date_modified=file_modified_time)
-                scenario.save()
-
-    scenario_list = Scenario.objects.all()
-    outstring = ""
-    for scenario in scenario_list:
-        outstring += scenario.name + ", " + scenario.file_name + ', ' + str(scenario.date_modified) + '\n'
-
-    return HttpResponse(outstring)
+    return build_scenarios()
 
 
 def build_scenarios():
@@ -123,11 +79,9 @@ def build_scenarios():
             found_in_database = False
             for scenario in scenario_list:
                 if scenario.file_name == fullfilename:
-                    print("Scenario found in database")
                     found_in_database = True
                     if file_modified_time > scenario.date_modified:
                         # The file is more recent than the database entry
-                        print("Data file is newer than database entry")
                         scenario.date_modified = file_modified_time
                         json_string = open(fullfilename, 'r').read()
                         scenario.json_file = json_string
@@ -138,7 +92,6 @@ def build_scenarios():
                         break
 
             if not found_in_database:
-                print("This is a new file")
                 json_string = open(fullfilename, 'r').read()
                 data = json.loads(json_string)
                 scenario = Scenario(name=data["name"],
@@ -160,10 +113,6 @@ def run_model(scenario):
     import json
     import json_to_model_system as gda_json
     import analyze_lp as gda_lp
-
-    # Get the first scenario from the database
-    #scenario_list = Scenario.objects.all()
-    #scenario = scenario_list[0]
 
     # Delete all records associated with this scenario
     resources_to_delete = Resource.objects.filter(scenario=scenario)
@@ -264,12 +213,10 @@ def run_model(scenario):
                       distance=route_dict['total_dist'])
         route.save()
 
-        route_segment_index = 0
         for segment_dict in route_dict['segments']:
             start_site = Site.objects.filter(name=segment_dict['points'][0])
             end_site = Site.objects.filter(name=segment_dict['points'][1])
             segment = RouteSegment(route=route,
-                                   index=route_segment_index,
                                    start_latitude=start_site[0].latitude,
                                    start_longitude=start_site[0].longitude,
                                    end_latitude=end_site[0].latitude,
@@ -306,6 +253,8 @@ def run_model(scenario):
     # FIXME - add a fake time to failure distribution until the model is updated
     ttfdist = TimeToFailureDistribution(scenario=scenario,
                                         key=(scenario.name + "- Time to Failure Distribution"),
+                                        x_axis_label='Days to Failure',
+                                        y_axis_label='Probability',
                                         data='[{"label":"1", "value":"0.0"},{"label":"2", "value":"0.0"},{"label":"3", "value":"0.0"},{"label":"4", "value":"0.1"},{"label":"5", "value":"0.15"},{"label":"6", "value":"0.3"},{"label":"7", "value":"0.25"},{"label":"8", "value":"0.15"},{"label":"9", "value":"0.05"},{"label":"10", "value":"0.0"}]')
     ttfdist.save()
 
@@ -347,6 +296,19 @@ def print_database():
                     print("\t\t\tContested Consumption:", asset_resource.consumption_capacity)
                     print("\t\t\tUncontested Consumption:", asset_resource.uncontested_consumption)
 
+        print("\tRoutes:")
+        route_list = Route.objects.filter(scenario=scenario)
+        for route in route_list:
+            print("\t\tName:", route.name)
+            print("\t\tDistance:", route.distance)
+            print("\t\tSegments:")
+            segment_list = RouteSegment.objects.filter(route=route)
+            for segment in segment_list:
+                print("\t\t\tStart Latitude:", segment.start_latitude)
+                print("\t\t\tStart Longitude:", segment.start_longitude)
+                print("\t\t\tEnd Latitude:", segment.end_latitude)
+                print("\t\t\tEnd Longitude:", segment.end_longitude)
+
         asset_route_assign_list = AssetRouteAssignment.objects.filter(scenario=scenario)
         print("\tAsset Route Assignment")
         for asset_route_assign in asset_route_assign_list:
@@ -358,6 +320,8 @@ def print_database():
         for dist in dist_list:
             print("\tDistribution:")
             print("\t\tKey:", dist.key)
+            print("\t\tX-Axis Label:", dist.x_axis_label)
+            print("\t\tY-Axis Label:", dist.y_axis_label)
             print("\t\tData:", dist.data)
 
 
@@ -468,7 +432,7 @@ class ScenarioViewSet(viewsets.ModelViewSet):
         return HttpResponse({})
 
 
-class ScenarioVewSet2(viewsets.ViewSet)  :
+class ScenarioVewSet2(viewsets.ViewSet):
     """
     Viewset that calls index view too
     """
@@ -497,6 +461,21 @@ class AssetViewSet(viewsets.ModelViewSet):
 class AssetResourceViewSet(viewsets.ModelViewSet):
     serializer_class = AssetResourceSerializer
     queryset = AssetResource.objects.all()
+
+
+class RouteViewSet(viewsets.ModelViewSet):
+    serializer_class = RouteSerializer
+    queryset = Route.objects.all()
+
+
+class RouteSegmentViewSet(viewsets.ModelViewSet):
+    serializer_class = RouteSegmentSerializer
+    queryset = RouteSegment.objects.all()
+
+
+class AssetRouteAssignmentViewSet(viewsets.ModelViewSet):
+    serializer_class = AssetRouteAssignmentSerializer
+    queryset = AssetRouteAssignment.objects.all()
 
 
 class TimeToFailureDistributionViewSet(viewsets.ModelViewSet):

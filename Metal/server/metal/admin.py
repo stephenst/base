@@ -7,6 +7,9 @@ from .models import Site
 from .models import Resource
 from .models import Asset
 from .models import AssetResource
+from .models import Route
+from .models import RouteSegment
+from .models import AssetRouteAssignment
 from .models import TimeToFailureDistribution
 
 admin.site.register(Perspective)
@@ -15,4 +18,7 @@ admin.site.register(Site)
 admin.site.register(Resource)
 admin.site.register(Asset)
 admin.site.register(AssetResource)
+admin.site.register(Route)
+admin.site.register(RouteSegment)
+admin.site.register(AssetRouteAssignment)
 admin.site.register(TimeToFailureDistribution)

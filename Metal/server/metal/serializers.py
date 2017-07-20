@@ -28,6 +28,9 @@ from .models import Asset
 from .models import AssetResource
 from .models import Resource
 from .models import Site
+from .models import Route
+from .models import RouteSegment
+from .models import AssetRouteAssignment
 from .models import TimeToFailureDistribution
 
 
@@ -74,6 +77,24 @@ class TimeToFailureDistributionSerializer(serializers.ModelSerializer):
     class Meta:
         model = TimeToFailureDistribution
         fields = ('scenario', 'key', 'data')
+
+
+class RouteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Route
+        fields = ('name', 'scenario', 'distance')
+
+
+class RouteSegmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RouteSegment
+        fields = ('route', 'start_latitude', 'start_longitude', 'end_latitude', 'end_longitude', 'distance')
+
+
+class AssetRouteAssignmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AssetRouteAssignment
+        fields = ('scenario', 'asset', 'route', 'count', 'utilization')
 
 
 class AssetResourceSerializer(serializers.ModelSerializer):

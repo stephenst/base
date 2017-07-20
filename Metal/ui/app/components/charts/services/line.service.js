@@ -5,7 +5,7 @@
 line
     .factory('LineFactory', function($resource) {
         return $resource(
-            'http://127.0.0.1:8070/metal/time_to_failure_distributions/:id/',
+            'http://127.0.0.1:8072/metal/time_to_failure_distributions/:id/',
             {},
             {
                 'query': {

@@ -2,7 +2,7 @@
 scenario
     .factory('ScenarioFactory', function($resource){
         return  $resource(
-            'http://localhost:8070/metal/scenarios/:id/:run',
+            'http://localhost:8072/metal/scenarios/:id/:run',
             {id: '@id', run: '@run'},
             {
                 query: {
