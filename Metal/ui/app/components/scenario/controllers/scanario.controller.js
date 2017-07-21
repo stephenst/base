@@ -35,6 +35,12 @@ scenario
             });
         };
 
+        $scope.getRoutes = function(scenarioName) {
+            ScenarioFactory.routes({id: scenarioName}, function (data) {
+                $scope.routeInfo = data;
+            });
+        };
+
         ScenarioFactory.query().$promise.then(function(data) {
             console.log("Scenario Controller query")
             $scope.scenarios = data;
@@ -70,8 +76,8 @@ scenario
 
         $scope.getScenario = function(scenarioName){
 
-            $scope.run_model(scenarioName);
-
+            //$scope.run_model(scenarioName);
+            //$scope.getRoutes(scenarioName);
              //$scope.data = [{ key: "Some key", values:[{"label":"77", "value":"22.0"}]}];
             ScenarioFactory.get({id:scenarioName}, function(data){
                 var jsonfileData = data.json_file;
@@ -91,12 +97,6 @@ scenario
                     //console.log(chartKey);
                     var chartDataStr = data.data;
                     var jsonChartData = angular.fromJson(chartDataStr);
-                    //console.log(chartDataStr);
-                    //jsonChartData.forEach(function(e){
-                     //   $scope.graphdata[0].values.push(e);
-                    //});
-                    // $scope.graphdata = [{ key: "Some key", values:[{"label":"77", "value":"22.0"}]}];
-                    //$scope.$apply();
                      $scope.data = [
                         {
                             key: chartKey,
@@ -118,7 +118,7 @@ scenario
                     description : 'Location: '+site.location[0]+', '+site.location[1]+'<br>'+
                     'Risk Type: '+site.risk.type+'<br>'+
                         'Needed Asset Types: '+site.needed_asset_types,
-                  position : Cesium.Cartesian3.fromDegrees(site.location[1], site.location[0]),
+                  position : Cesium.Cartesian3.fromDegrees(site.location[1]/62, site.location[0]/62),
                   point : {
                     pixelSize : 5,
                     color : Cesium.Color.RED,
