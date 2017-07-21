@@ -109,12 +109,13 @@ def build_scenarios():
     return HttpResponse(outstring)
 
 
-def run_model(scenario):
+def run_model(scenario_key):
 
     import json
     import json_to_model_system as gda_json
     import analyze_lp as gda_lp
 
+    scenario = Scenario.objects.filter(name=scenario_key).first()
     # Delete all records associated with this scenario
     resources_to_delete = Resource.objects.filter(scenario=scenario)
     assets_to_delete = Asset.objects.filter(scenario=scenario)
@@ -261,7 +262,7 @@ def run_model(scenario):
 
     print_database()
 
-    return HttpResponse(result)
+    #return HttpResponse(result)
 
 
 def print_database():
@@ -494,3 +495,9 @@ class AssetRouteAssignmentViewSet(viewsets.ModelViewSet):
 class TimeToFailureDistributionViewSet(viewsets.ModelViewSet):
     serializer_class = TimeToFailureDistributionSerializer
     queryset = TimeToFailureDistribution.objects.all()
+
+    def get_object(self):
+        if self.action == 'retrieve':
+            scenario = self.kwargs['pk']
+            run_model(scenario)
+        return super().get_object()
