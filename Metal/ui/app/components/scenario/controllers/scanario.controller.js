@@ -114,15 +114,8 @@ scenario
                  });
                  $rootScope.viewer.zoomTo($rootScope.viewer.entities);
             });
-            CesiumFactory.query(function(data){
-                console.log("Cesium Factory");
-                 //   console.log(data);
-                 $scope.selectedScenario = addroutes(data, scenarioName);
-                 $scope.selectedScenario.forEach(function(e){
-                     $rootScope.viewer.entities.add(e);
-                 });
-            });
-            LineFactory.get({id:scenarioName}, function(data){
+
+            LineFactory.get({id:scenarioName}).$promise.then( function(data){
                 console.log("In Line Factory");
                 var chartKey  = data.key;
                     //console.log(chartKey);
@@ -134,6 +127,15 @@ scenario
                             values : jsonChartData
                         }
                      ];
+            }).then(function(){
+               CesiumFactory.query(function(data){
+                console.log("Cesium Factory");
+                 //   console.log(data);
+                 $scope.selectedScenario = addroutes(data, scenarioName);
+                 $scope.selectedScenario.forEach(function(e){
+                     $rootScope.viewer.entities.add(e);
+                 });
+            });
             });
 
         };
