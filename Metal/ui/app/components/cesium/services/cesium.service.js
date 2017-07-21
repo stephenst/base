@@ -1,10 +1,11 @@
 /**
  * Created by pcharasala on 7/3/2017.
  */
+
 cesium
     .factory('CesiumFactory', function($resource) {
         return $resource(
-            'http://localhost:8072/metal/pie/:id/',
+            'http://127.0.0.1:8072/metal/routes/:id/',
             {},
             {
                 'query': {

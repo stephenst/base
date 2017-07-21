@@ -226,11 +226,13 @@ def run_model(scenario_key):
                                    distance=segment_dict['dist'])
             segment.save()
 
+    print("Beginning Run of LP for ", scenario.name)
     # Construct LP from model system and model routes
     gda_lp.assemble_problem(model_system, model_route)
 
     # Solve LP
     result = gda_lp.solve_LP_per_route(model_system, model_route)
+    print("Completed Run of LP for ", scenario.name)
 
     composite_asset_list = model_system.assets
     comp_asset_based_results = result.lp_res_counts_df
@@ -252,14 +254,28 @@ def run_model(scenario_key):
                         asset_route_assign.save()
                     break
 
+    print("Completed Asset Route Assignment writing for ", scenario.name)
     # FIXME - add a fake time to failure distribution until the model is updated
+    data = "[{"
+    import numpy as np
+    s = np.random.normal(6, 1.5, 1000)
+    counts, edges = np.histogram(s, bins=10)
+    for day in range(1,11):
+        data += "\"label\": \" " + str(day) + "\", \"value\":\" " + str((counts[day - 1]/1000))
+        if day == 10:
+            data += "\"}"
+        else:
+            data += "\"},{"
+    data += "]"
+
     ttfdist = TimeToFailureDistribution(scenario=scenario,
                                         key=(scenario.name + "- Time to Failure Distribution"),
                                         x_axis_label='Days to Failure',
                                         y_axis_label='Probability',
-                                        data='[{"label":"1", "value":"0.0"},{"label":"2", "value":"0.0"},{"label":"3", "value":"0.0"},{"label":"4", "value":"0.1"},{"label":"5", "value":"0.15"},{"label":"6", "value":"0.3"},{"label":"7", "value":"0.25"},{"label":"8", "value":"0.15"},{"label":"9", "value":"0.05"},{"label":"10", "value":"0.0"}]')
+                                        data=data)
     ttfdist.save()
-
+    print("Completed building Time to failure distribution for ", scenario.name)
+    print("Data = ", data)
     # print_database()
 
     #return HttpResponse(result)
