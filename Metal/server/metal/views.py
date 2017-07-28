@@ -1,8 +1,8 @@
 # ******************************************************************************
 #
 #   File:   metal/views.py
-#   Rev:    a-1
-#   Date:   07/14/2017
+#   Rev:    a-2
+#   Date:   07/28/2017
 #
 #   Developed for the U.S. Government under contract(s):
 #           HR001117C0099
@@ -17,6 +17,8 @@
 #
 #   a-1:    07/14/2017  pcharasala
 #           : Initial version
+#   a-2:    07/28/2017  cstarkey
+#           : Added risk areas, colors and map data
 #
 # ******************************************************************************
 
@@ -34,6 +36,10 @@ from .serializers import AssetResourceSerializer
 from .serializers import RouteSerializer
 from .serializers import RouteSegmentSerializer
 from .serializers import AssetRouteAssignmentSerializer
+from .serializers import RiskTypeSerializer
+from .serializers import RiskAreaSerializer
+from .serializers import RiskAreaVertexSerializer
+from .serializers import MapDataSerializer
 from .serializers import TimeToFailureDistributionSerializer
 
 from rest_framework import status
@@ -50,6 +56,9 @@ from .models import Route
 from .models import RouteSegment
 from .models import Scenario
 from .models import Site
+from .models import RiskType
+from .models import RiskArea
+from .models import RiskAreaVertex
 from .models import TimeToFailureDistribution
 from .serializers import PerspectiveSerializer
 from .serializers import UserSerializer
@@ -109,12 +118,13 @@ def build_scenarios():
     return HttpResponse(outstring)
 
 
-def run_model(scenario):
+def run_model(scenario_key):
 
     import json
     import json_to_model_system as gda_json
     import analyze_lp as gda_lp
 
+    scenario = Scenario.objects.filter(name=scenario_key).first()
     # Delete all records associated with this scenario
     resources_to_delete = Resource.objects.filter(scenario=scenario)
     assets_to_delete = Asset.objects.filter(scenario=scenario)
@@ -143,6 +153,17 @@ def run_model(scenario):
     for asset_route_assignment in asset_route_assignments_to_delete:
         asset_route_assignment.delete()
 
+    risktypes_to_delete = RiskType.objects.filter(scenario=scenario)
+    for risktype in risktypes_to_delete:
+        risktype.delete()
+
+    riskareas_to_delete = RiskArea.objects.filter(scenario=scenario)
+    for riskarea in riskareas_to_delete:
+        riskareavertex_to_delete = RiskAreaVertex.objects.filter(riskarea=riskarea)
+        for riskareavertex in riskareavertex_to_delete:
+            riskareavertex.delete()
+        riskarea.delete()
+
     ttfdist_to_delete = TimeToFailureDistribution.objects.filter(scenario=scenario)
     for ttfdist in ttfdist_to_delete:
         ttfdist.delete()
@@ -156,6 +177,7 @@ def run_model(scenario):
     for asset_dict in assets_raw:
         asset = Asset(name=asset_dict['name'],
                       speed=(asset_dict['attributes'])['max_speed'],
+                      htmlcolor=(asset_dict['attributes']).get('htmlcolor','black'),
                       scenario=scenario)
         asset.save()
         resource_dict = (asset_dict['attributes'])['resources']
@@ -192,13 +214,37 @@ def run_model(scenario):
     sites_raw = scenario_pnode['sites']
     for site_dict in sites_raw:
         # FIXME - Note the input file permits multiple assets per site but now we are only taking one
-        asset = Asset.objects.filter(name=(site_dict['needed_asset_types'])[0])
+        asset = Asset.objects.filter(name=(site_dict['needed_asset_types'])[0], scenario=scenario)
         site = Site(name=site_dict['name'],
                     scenario=scenario,
                     asset=asset[0],
                     latitude=(site_dict['location'])[0],
                     longitude=(site_dict['location'])[1])
         site.save()
+
+    risktype_dict = dict()
+    risk_raw = scenario_pnode.get('risktypes', [])
+    for risk_dict in risk_raw:
+        risktype_name = risk_dict['name']
+        risktype = RiskType(name=risktype_name,
+                      htmlcolor=risk_dict.get('htmlcolor','white'),
+                      scenario=scenario)
+        risktype.save()
+        risktype_dict[risktype_name] = risktype
+
+    riskarea_raw = scenario_pnode.get('riskareas', [])
+    for riskarea_dict in riskarea_raw:
+        risktype_name = riskarea_dict['risktype']
+        risktype = risktype_dict[risktype_name]
+        riskarea = RiskArea(name=riskarea_dict['name'],
+                      risktype=risktype,
+                      scenario=scenario)
+        riskarea.save()
+        for vertex_array in riskarea_dict['region']:
+            riskareavertex = RiskAreaVertex(riskarea=riskarea,
+			    	latitude=vertex_array[0],
+			    	longitude=vertex_array[1])
+            riskareavertex.save()
 
     # budget_raw = scenario_pnode['budget']
     # composites_raw = scenario_pnode['composite_relations']
@@ -225,11 +271,13 @@ def run_model(scenario):
                                    distance=segment_dict['dist'])
             segment.save()
 
+    print("Beginning Run of LP for ", scenario.name)
     # Construct LP from model system and model routes
     gda_lp.assemble_problem(model_system, model_route)
 
     # Solve LP
     result = gda_lp.solve_LP_per_route(model_system, model_route)
+    print("Completed Run of LP for ", scenario.name)
 
     composite_asset_list = model_system.assets
     comp_asset_based_results = result.lp_res_counts_df
@@ -251,17 +299,31 @@ def run_model(scenario):
                         asset_route_assign.save()
                     break
 
+    print("Completed Asset Route Assignment writing for ", scenario.name)
     # FIXME - add a fake time to failure distribution until the model is updated
+    data = "[{"
+    import numpy as np
+    s = np.random.normal(6, 1.5, 1000)
+    counts, edges = np.histogram(s, bins=10)
+    for day in range(1,11):
+        data += "\"label\": \" " + str(day) + "\", \"value\":\" " + str((counts[day - 1]/1000))
+        if day == 10:
+            data += "\"}"
+        else:
+            data += "\"},{"
+    data += "]"
+
     ttfdist = TimeToFailureDistribution(scenario=scenario,
                                         key=(scenario.name + "- Time to Failure Distribution"),
                                         x_axis_label='Days to Failure',
                                         y_axis_label='Probability',
-                                        data='[{"label":"1", "value":"0.0"},{"label":"2", "value":"0.0"},{"label":"3", "value":"0.0"},{"label":"4", "value":"0.1"},{"label":"5", "value":"0.15"},{"label":"6", "value":"0.3"},{"label":"7", "value":"0.25"},{"label":"8", "value":"0.15"},{"label":"9", "value":"0.05"},{"label":"10", "value":"0.0"}]')
+                                        data=data)
     ttfdist.save()
-
+    print("Completed building Time to failure distribution for ", scenario.name)
+    print("Data = ", data)
     # print_database()
 
-    return HttpResponse(result)
+    #return HttpResponse(result)
 
 
 def print_database():
@@ -316,6 +378,17 @@ def print_database():
             print("\t\tAsset:", asset_route_assign.asset.name)
             print("\t\tRoute:", asset_route_assign.route.name)
             print("\t\tCount:", asset_route_assign.count)
+
+        print("\tRiskAreas:")
+        riskarea_list = RiskArea.objects.filter(scenario=scenario)
+        for riskarea in riskarea_list:
+            print("\t\tName:", riskarea.name)
+            print("\t\tRisk Type:", riskarea.risktype.name)
+            print("\t\tVerteces:")
+            vertex_list = RiskAreaVertex.objects.filter(riskarea=riskarea)
+            for vertex in vertex_list:
+                print("\t\t\tLatitude:", vertex.latitude)
+                print("\t\t\tLongitude:", vertex.longitude)
 
         dist_list = TimeToFailureDistribution.objects.filter(scenario=scenario)
         for dist in dist_list:
@@ -490,7 +563,28 @@ class AssetRouteAssignmentViewSet(viewsets.ModelViewSet):
     serializer_class = AssetRouteAssignmentSerializer
     queryset = AssetRouteAssignment.objects.all()
 
+class RiskTypeViewSet(viewsets.ModelViewSet):
+    serializer_class = RiskTypeSerializer
+    queryset = RiskType.objects.all()
+
+class RiskAreaViewSet(viewsets.ModelViewSet):
+    serializer_class = RiskAreaSerializer
+    queryset = RiskArea.objects.all()
+
+class RiskAreaVertexViewSet(viewsets.ModelViewSet):
+    serializer_class = RiskAreaVertexSerializer
+    queryset = RiskAreaVertex.objects.all()
+
+class MapViewSet(viewsets.ModelViewSet):
+    serializer_class = MapDataSerializer
+    queryset = Scenario.objects.all()
 
 class TimeToFailureDistributionViewSet(viewsets.ModelViewSet):
     serializer_class = TimeToFailureDistributionSerializer
     queryset = TimeToFailureDistribution.objects.all()
+
+    def get_object(self):
+        if self.action == 'retrieve':
+            scenario = self.kwargs['pk']
+            run_model(scenario)
+        return super().get_object()
