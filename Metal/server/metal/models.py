@@ -1,8 +1,8 @@
 # ******************************************************************************
 #
 #   File:   models.py
-#   Rev:    a-1
-#   Date:   07/12/2017
+#   Rev:    a-2
+#   Date:   07/28/2017
 #
 #   Developed for the U.S. Government under contract(s):
 #           HR001117C0099
@@ -17,6 +17,8 @@
 #
 #   a-1:    07/12/2017  mcosgrove
 #           : Initial version
+#   a-2:    07/28/2017  cstarkey
+#           : Added risk areas, colors and a serializer tag to AssetResource
 #
 # ******************************************************************************
 
@@ -50,6 +52,7 @@ class Asset(models.Model):
     name = models.TextField()
     scenario = models.ForeignKey(Scenario, related_name='assets', default='default', on_delete=models.CASCADE)
     speed = models.FloatField()
+    htmlcolor = models.TextField(default='black')
 
     def __str__(self):
         return self.name
@@ -59,8 +62,8 @@ class AssetResource(models.Model):
     class Meta:
         unique_together = (('asset', 'resource'),)
         # https://stackoverflow.com/questions/28712848/composite-primary-key-in-django
-    asset = models.ForeignKey(Asset, default='default', on_delete=models.CASCADE)
-    resource = models.ForeignKey(Resource, default='default', on_delete=models.CASCADE)
+    asset = models.ForeignKey(Asset, related_name='asset_resources', default='default', on_delete=models.CASCADE)
+    resource = models.ForeignKey(Resource, related_name='asset_resources', default='default', on_delete=models.CASCADE)
     transport_capacity = models.FloatField()
     consumption_capacity = models.FloatField()
     contested_consumption = models.FloatField()
@@ -115,6 +118,34 @@ class AssetRouteAssignment(models.Model):
 
     def __str__(self):
         return self.asset.name + '-' + self.route.name
+
+class RiskType(models.Model):
+    class Meta:
+        unique_together = ('name', 'scenario')
+    scenario = models.ForeignKey(Scenario, related_name='risk_types', default='default', on_delete=models.CASCADE)
+    name = models.TextField()
+    htmlcolor = models.TextField(default='white')
+
+    def __str__(self):
+        return self.name
+
+class RiskArea(models.Model):
+    class Meta:
+        unique_together = ('name', 'scenario')
+    scenario = models.ForeignKey(Scenario, related_name='risk_areas', default='default', on_delete=models.CASCADE)
+    risktype = models.ForeignKey(RiskType, related_name='risk_areas', default='default', on_delete=models.CASCADE)
+    name = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+class RiskAreaVertex(models.Model):
+    riskarea = models.ForeignKey(RiskArea, related_name='risk_area_verteces', default='default', on_delete=models.CASCADE)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+
+    def __str__(self):
+        return self.riskarea.name + '- vertex ' + str(self.id)
 
 
 class TimeToFailureDistribution(models.Model):
