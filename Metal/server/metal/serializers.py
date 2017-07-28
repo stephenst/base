@@ -1,8 +1,8 @@
 # ******************************************************************************
 #
 #   File:   serializers.py
-#   Rev:    a-1
-#   Date:   07/14/2017
+#   Rev:    a-2
+#   Date:   07/28/2017
 #
 #   Developed for the U.S. Government under contract(s):
 #           HR001117C0099
@@ -17,6 +17,9 @@
 #
 #   a-1:    07/14/2017  pcharasala
 #           : Initial version
+#   a-2:    07/28/2017  cstarkey
+#	    : Added map data serializer tree
+#           : Added risk areas
 #
 # ******************************************************************************
 
@@ -31,6 +34,9 @@ from .models import Site
 from .models import Route
 from .models import RouteSegment
 from .models import AssetRouteAssignment
+from .models import RiskType
+from .models import RiskArea
+from .models import RiskAreaVertex
 from .models import TimeToFailureDistribution
 
 
@@ -54,64 +60,85 @@ class ScenarioSerializer(serializers.ModelSerializer):
         model = Scenario
         fields = ('name', 'file_name', 'json_file', 'date_modified', 'resources', 'sites')
 
-
-class ScenarioRoutesSerializer(serializers.ModelSerializer):
-    routes = serializers.StringRelatedField(many=True)
-
-    class Meta:
-        model = Scenario
-        fields = ('name', 'routes')
-
-
+#resources
 class ResourceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Resource
-        fields = ('name', 'scenario')
+        fields = ('id', 'name')
 
+#assets
+class AssetResourceSerializer(serializers.ModelSerializer):
+    resource = ResourceSerializer(many=False, read_only=True)
+    class Meta:
+        model = AssetResource
+        fields = ('asset', 'resource', 'transport_capacity', 'consumption_capacity', 'contested_consumption',
+                  'uncontested_consumption')
 
 class AssetSerializer(serializers.ModelSerializer):
+    asset_resources = AssetResourceSerializer(many=True, read_only=True)
     class Meta:
         model = Asset
-        fields = ('name', 'speed')
+        fields = ('id', 'name', 'speed', 'htmlcolor', 'asset_resources')
 
-
+# sites
 class SiteSerializer(serializers.ModelSerializer):
+    asset = AssetSerializer(many=False, read_only=True)
     class Meta:
         model = Site
-        fields = ('name', 'scenario', 'asset', 'latitude', 'longitude')
+        fields = ('id', 'name', 'asset', 'latitude', 'longitude')
 
-
-class TimeToFailureDistributionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TimeToFailureDistribution
-        fields = ('scenario', 'key', 'data', 'x_axis_label', 'y_axis_label')
-
-
+# routes
 class RouteSegmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = RouteSegment
         fields = ('id', 'route', 'start_latitude', 'start_longitude', 'end_latitude',
                   'end_longitude', 'distance')
 
-
-
-class RouteSerializer(serializers.ModelSerializer):
-    #route_segments = serializers.StringRelatedField(many=True)
-    route_segments = RouteSegmentSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Route
-        fields = ('name', 'scenario', 'distance', 'route_segments')
-
-
 class AssetRouteAssignmentSerializer(serializers.ModelSerializer):
+    asset = AssetSerializer(many=False, read_only=True)
     class Meta:
         model = AssetRouteAssignment
-        fields = ('scenario', 'asset', 'route', 'count', 'utilization')
+        fields = ('asset', 'route', 'count', 'utilization')
 
-
-class AssetResourceSerializer(serializers.ModelSerializer):
+class RouteSerializer(serializers.ModelSerializer):
+    route_segments = RouteSegmentSerializer(many=True, read_only=True)
+    asset_route_assignments = AssetRouteAssignmentSerializer(many=True, read_only=True)
     class Meta:
-        model = AssetResource
-        fields = ('asset', 'resource', 'transport_capacity', 'consumption_capacity', 'contested_consumption',
-                  'uncontested_consumption')
+        model = Route
+        fields = ('id', 'name', 'scenario', 'distance', 'route_segments', 'asset_route_assignments')
+
+# risk areas
+class RiskTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RiskType
+        fields = ('id', 'name', 'htmlcolor')
+
+class RiskAreaVertexSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RiskAreaVertex
+        fields = ('id', 'latitude', 'longitude')
+
+class RiskAreaSerializer(serializers.ModelSerializer):
+    risktype = RiskTypeSerializer(many=False, read_only=True)
+    risk_area_verteces = RiskAreaVertexSerializer(many=True, read_only=True)
+    class Meta:
+        model = RiskArea
+        fields = ('id', 'name', 'risktype', 'risk_area_verteces')
+
+# map data
+class MapDataSerializer(serializers.ModelSerializer):
+    resources = ResourceSerializer(many=True, read_only=True)
+    assets = AssetSerializer(many=True, read_only=True)
+    sites = SiteSerializer(many=True, read_only=True)
+    risk_areas = RiskAreaSerializer(many=True, read_only=True)
+    routes = RouteSerializer(many=True, read_only=True)
+    class Meta:
+        model = Scenario
+        fields = ('name', 'resources', 'assets', 'sites', 'risk_areas', 'routes')
+
+# time to failure
+class TimeToFailureDistributionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TimeToFailureDistribution
+        fields = ('scenario', 'key', 'data', 'x_axis_label', 'y_axis_label')
+
