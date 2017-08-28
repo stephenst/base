@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('metal.scenarios')
+        .module('metal.stock')
         .factory('StockFactory', StockFactory);
 
     StockFactory.$inject = ['$resource'];

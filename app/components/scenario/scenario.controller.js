@@ -3,23 +3,20 @@
     'use strict';
 
     angular
-        .module("metal.scenarios")
+        .module("metal.scenario")
         .controller("ScenarioController", ScenarioController);
 
-    ScenarioController.$inject = ['$rootScope', '$scope', 'ScenarioFactory', 'LineFactory', 'CesiumFactory', 'PerspectiveFactory'];
+    ScenarioController.$inject = ['$rootScope', '$scope', 'ScenarioFactory', 'LineFactory', 'CesiumFactory', 'StockFactory'];
 
     /**
      * @ngdoc controller
-     * @name metal.cesium.cesiumController
-     * @memberof app.layout
+     * @name ScenarioController
+     * @memberof metal.scenario
      *
-     * @requires {Function} logger
      * @constructor
      */
-    function ScenarioController($rootScope, $scope, ScenarioFactory, LineFactory, CesiumFactory, PerspectiveFactory) {
+    function ScenarioController($rootScope, $scope, ScenarioFactory, LineFactory, CesiumFactory, StockFactory) {
         var vm = this;
-
-        logger.info("CesiumController fired");
         activate();
 
         /**
@@ -29,7 +26,7 @@
          * @returns Console output
          */
         function activate() {
-            logger.info("Activated Layout");
+            console.log("Activated Layout");
         }
 
         var earthradius = 3440.2769;
@@ -70,7 +67,7 @@
             console.log(jsondatastr);
 
             $scope.perspective.jsondata = jsondatastr;
-            PerspectiveFactory.update($scope.perspective, function () {
+            StockFactory.getPerspectives().update($scope.perspective, function () {
                 console.log("saved");
             });
         };
@@ -79,7 +76,7 @@
             console.log("Import button clicked");
             //var jsondata = '{"panel0": {"window3":{"collapsed":false}},"floating":{"window1":{"x":"1320px","y":"55px","width":"265","height":"571","collapsed":false},"window2":{"x":"330px","y":"347px","width":"870","height":"537","collapsed":false}},"orientation": "horizontal"}';
 
-            PerspectiveFactory.get({id: 1}, function (data) {
+            StockFactory.getPerspectives().get({id: 1}, function (data) {
                 //console.log(data);
                 $scope.perspective = data;
                 $('#docking').jqxDocking('importLayout', data.jsondata);

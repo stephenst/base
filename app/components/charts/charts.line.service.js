@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('metal.cesium')
+        .module('metal.charts')
         .factory('LineFactory', LineFactory);
 
     LineFactory.$inject = ['$resource'];
@@ -19,7 +19,7 @@
 
         /**
          * @name getTimeToFailure
-         * @memberof metal.cesium.LineFactory
+         * @memberof metal.charts.LineFactory
          * @summary
          *  Utility function for mapdata object REST resource
          *

@@ -16,18 +16,14 @@
      */
     angular.module('metal', [
         'nvd3',
-        'cesium',
         'jqwidgets',
         'ngResource',
-        'appRoutes',
-        'openlayers-directive',
-        'openlayers_dir',
-        'scenario',
-        'widgets',
-        'stock',
-        'pie',
-        'line',
-        'boxplot'
+        'ui.router',
+        'ui.bootstrap',
+        'metal.cesium',
+        'metal.charts',
+        'metal.scenario',
+        'metal.stock'
     ]).run(function ($rootScope) {
         $rootScope.viewer = new Cesium.Viewer('cesiumContainer', {
             animation: false,

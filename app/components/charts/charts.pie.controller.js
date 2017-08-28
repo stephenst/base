@@ -2,15 +2,15 @@
     "use strict";
 
     angular
-        .module("metal.cesium")
+        .module("metal.charts")
         .controller("PieController", PieController);
 
     PieController.$inject = ["$scope", "PieFactory"];
 
     /**
      * @ngdoc controller
-     * @name metal.cesium.PieController
-     * @memberof app.layout
+     * @name PieController
+     * @memberof metal.charts
      *
      * @constructor
      */
@@ -23,7 +23,7 @@
         /**
          * activate function
          *
-         * @memberof metal.cesium.LineController
+         * @memberof metal.charts.LineController
          * @returns Console output
          */
         function activate () {

@@ -2,7 +2,7 @@
     "use strict";
 
     angular
-        .module("metal.cesium")
+        .module("metal.stock")
         .controller("StockController", StockController);
 
     StockController.$inject = ['$scope', 'StockFactory'];

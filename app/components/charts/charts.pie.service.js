@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('metal.cesium')
+        .module('metal.charts')
         .factory("PieFactory", PieFactory);
 
     PieFactory.$inject = ['$resource'];
@@ -10,7 +10,7 @@
     /**
      * @ngdoc service
      * @name LineFactory
-     * @memberof metal.cesium
+     * @memberof metal.charts
      */
     function PieFactory ($resource) {
         var service = {
@@ -19,7 +19,7 @@
 
         /**
          * @name getTimeToFailure
-         * @memberof metal.cesium.LineFactory
+         * @memberof metal.charts.LineFactory
          * @summary
          *  Utility function for mapdata object REST resource
          *

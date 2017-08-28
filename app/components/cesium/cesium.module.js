@@ -12,7 +12,7 @@
      * @requires {@Link app.layout}
      * @requires {@Link app.patterns}
      */
-    angular.module('cesium', [
+    angular.module('metal.cesium', [
         'nvd3'
     ]);
 

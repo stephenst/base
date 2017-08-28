@@ -55,7 +55,7 @@
         };
     }
 
-    configure.$inject = ['$stateProvider', '$urlRouterProvider', '$httpProvider', 'markedProvider'];
+    configure.$inject = ['$stateProvider', '$urlRouterProvider', '$httpProvider'];
 
     /**
      * @ngdoc function

@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('metal.scenarios')
+        .module('metal.scenario')
         .factory('ScenarioFactory', ScenarioFactory);
 
     ScenarioFactory.$inject = ['$resource'];
@@ -10,7 +10,7 @@
     /**
      * @ngdoc service
      * @name ScenarioFactory
-     * @memberof metal.scenarios
+     * @memberof metal.scenario
      */
     function ScenarioFactory ($resource) {
         var service = {
@@ -19,7 +19,7 @@
 
         /**
          * @name getScenarios
-         * @memberof metal.scenarios.ScenarioFactory
+         * @memberof metal.scenario.ScenarioFactory
          * @summary
          *  Utility function for mapdata object REST resource
          *

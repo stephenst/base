@@ -20,16 +20,14 @@ module.exports = {
             "node_modules/angular-openlayers-directive/dist/angular-openlayers-directive.js",
             "node_modules/cesium/Build/Cesium/Cesium.js",
             "node_modules/jqwidgets-framework/jqwidgets/jqx-all.js",
-            "node_modules/ol/index.js",
-            "node_modules/angular-growl-v2/build/angular-growl.js",
-            "node_modules/angular-ui-grid/ui-grid.js"
+            "node_modules/angular-growl-v2/build/angular-growl.js"
+
         ],
         dest: "build/_assets/js/vendor.js"
     },
     vendorCss: {
         src: [
             "node_modules/angular-growl-v2/build/angular-growl.css",
-            "node_modules/angular-ui-grid/ui-grid.css",
             "node_modules/ol/ol.css",
             "node_modules/font-awesome/css/font-awesome.min.css"
         ],

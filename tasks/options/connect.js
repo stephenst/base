@@ -2,7 +2,7 @@ module.exports = {
     options: {
         protocol: "http",
         hostname: "localhost",
-        port: "9000",
+        port: "8082",
         //  open: {
         //      // target: 'http://localhost:9000', NW!
         //      // name of the app that opens, ie: open, start, xdg-open

@@ -2,15 +2,15 @@
     "use strict";
 
     angular
-        .module("metal.cesium")
+        .module("metal.charts")
         .controller("BoxPlotController", BoxPlotController);
 
     BoxPlotController.$inject = [];
 
     /**
      * @ngdoc controller
-     * @name metal.cesium.BoxPlotController
-     * @memberof app.layout
+     * @name BoxPlotController
+     * @memberof metal.charts
      *
      * @constructor
      */
@@ -23,7 +23,7 @@
         /**
          * activate function
          *
-         * @memberof metal.cesium.BoxPlotController
+         * @memberof metal.charts.BoxPlotController
          * @returns Console output
          */
         function activate () {

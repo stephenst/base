@@ -9,7 +9,7 @@
      * The Charts Module of the Metal App.
      *
      */
-    angular.module('cesium', [
+    angular.module('metal.charts', [
         'nvd3',
         'jqwidgets'
     ]);

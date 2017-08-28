@@ -2,15 +2,15 @@
     "use strict";
 
     angular
-        .module("metal.cesium")
+        .module("metal.charts")
         .controller("LineController", LineController);
 
     LineController.$inject = ["$scope", "LineFactory"];
 
     /**
      * @ngdoc controller
-     * @name metal.cesium.LineController
-     * @memberof app.layout
+     * @name LineController
+     * @memberof metal.charts
      *
      * @constructor
      */
@@ -23,7 +23,7 @@
         /**
          * activate function
          *
-         * @memberof metal.cesium.LineController
+         * @memberof metal.charts.LineController
          * @returns Console output
          */
         function activate () {
