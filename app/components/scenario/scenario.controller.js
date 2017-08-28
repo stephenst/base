@@ -6,7 +6,7 @@
         .module("metal.scenario")
         .controller("ScenarioController", ScenarioController);
 
-    ScenarioController.$inject = ['$rootScope', '$scope', 'ScenarioFactory', 'LineFactory', 'CesiumFactory', 'StockFactory'];
+    ScenarioController.$inject = ['$rootScope', '$scope', 'ScenarioFactory', 'ChartsFactory', 'CesiumFactory', 'StockFactory'];
 
     /**
      * @ngdoc controller
@@ -15,7 +15,7 @@
      *
      * @constructor
      */
-    function ScenarioController($rootScope, $scope, ScenarioFactory, LineFactory, CesiumFactory, StockFactory) {
+    function ScenarioController($rootScope, $scope, ScenarioFactory, ChartsFactory, CesiumFactory, StockFactory) {
         var vm = this;
         activate();
 
@@ -59,7 +59,6 @@
             return [lat, lon];
         }
 
-//
 
         $scope.export = function (eventData) {
             console.log("Export button clicked");
@@ -84,12 +83,13 @@
         };
 
         $scope.run_model = function (scenarioName) {
-            ScenarioFactory.run({id: scenarioName}, function (data) {
+            ScenarioFactory.getScenarios().run({id: scenarioName}, function (data) {
                 console.log("model run for scenario:" + scenarioName);
             });
         };
 
-        ScenarioFactory.query().$promise.then(function (data) {
+        ScenarioFactory.getScenarios().query().$promise.then(function (data) {
+            console.log("Scenario Controller query")
             $scope.scenarios = data;
         });
 
@@ -130,11 +130,11 @@
             //$scope.run_model(scenarioName);
             //$scope.getRoutes(scenarioName);
             //$scope.data = [{ key: "Some key", values:[{"label":"77", "value":"22.0"}]}];
-            ScenarioFactory.get({id: scenarioName}, function (data) {
+            ScenarioFactory.getScenarios().get({id: scenarioName}, function (data) {
 
             });
 
-            LineFactory.get({id: scenarioName}).$promise.then(function (data) {
+            ChartsFactory.getTimeToFailure().get({id: scenarioName}).$promise.then(function (data) {
                 console.log("In Line Factory");
                 var chartKey = data.key;
                 //console.log(chartKey);
@@ -147,7 +147,7 @@
                     }
                 ];
             }).then(function () {
-                CesiumFactory.get({id: scenarioName}).$promise.then(function (data) {
+                CesiumFactory.getMapData().get({id: scenarioName}).$promise.then(function (data) {
                     console.log("Cesium Factory");
                     // clear the existing map
                     $rootScope.viewer.entities.removeAll();
@@ -230,14 +230,14 @@
             }
             // add routes
             var routedata = data.routes;
-            for (var ii = 0; ii < routedata.length; i++) {
-                var route = routedata[ii];
+            for (var i = 0; i < routedata.length; i++) {
+                var route = routedata[i];
                 if (route.asset_route_assignments.length === 0) {
                     // no assignments to this route
                     continue;
                 }
-                degarray = [];
-                for (j = 0; j < route.route_segments.length; j++) {
+                var degarray = [];
+                for (var j = 0; j < route.route_segments.length; j++) {
                     var seg = route.route_segments[j];
                     if (j === 0) {
                         var ll0 = nmToLatLon(seg.start_latitude, seg.start_longitude);

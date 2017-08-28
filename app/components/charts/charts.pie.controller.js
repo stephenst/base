@@ -5,7 +5,7 @@
         .module("metal.charts")
         .controller("PieController", PieController);
 
-    PieController.$inject = ["$scope", "PieFactory"];
+    PieController.$inject = ["$scope", "ChartsFactory"];
 
     /**
      * @ngdoc controller
@@ -14,7 +14,7 @@
      *
      * @constructor
      */
-    function PieController ($scope, PieFactory) {
+    function PieController ($scope, ChartsFactory) {
         var vm = this;
 
         console.log("LineController fired");

@@ -5,7 +5,7 @@
         .module("metal.charts")
         .controller("LineController", LineController);
 
-    LineController.$inject = ["$scope", "LineFactory"];
+    LineController.$inject = ["$scope", "ChartsFactory"];
 
     /**
      * @ngdoc controller
@@ -14,7 +14,7 @@
      *
      * @constructor
      */
-    function LineController ($scope, LineFactory) {
+    function LineController ($scope, ChartsFactory) {
         var vm = this;
 
         logger.info("LineController fired");
@@ -58,7 +58,7 @@
 
             //$scope.getGraphData($scope.selectedScenarioName);
             $scope.getGraphData = function(scenarioName){
-                var data = LineFactory.get({id:scenarioName}, function(data){
+                var data = ChartsFactory.getTimeToFailure().get({id:scenarioName}, function(data){
                     var chartKey  = data.key;
                     console.log(chartKey);
                     var chartDataStr = data.data;
