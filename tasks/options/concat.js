@@ -33,6 +33,6 @@ module.exports = {
             "node_modules/ol/ol.css",
             "node_modules/font-awesome/css/font-awesome.min.css"
         ],
-        dest: "build/_assets/js/vendor.css"
+        dest: "build/_assets/css/vendor.css"
     }
 };

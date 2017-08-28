@@ -49,4 +49,4 @@
         });
         $rootScope.server_port = '8070';
     });
-});
+})();

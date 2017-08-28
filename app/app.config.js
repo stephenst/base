@@ -1,6 +1,4 @@
 (function () {
-
-
     'use strict';
 
     var config = {
@@ -188,7 +186,6 @@
             controller: 'ScenarioController'
         });
         $urlRouterProvider.otherwise('/');
-
     }
 
-});
+})();

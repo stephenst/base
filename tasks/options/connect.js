@@ -1,8 +1,8 @@
 module.exports = {
     options: {
-        protocol: "<%= cfg.env.dev.local.protocol %>",
-        hostname: "<%= cfg.env.dev.local.host %>",
-        port: "<%= cfg.env.dev.local.port %>",
+        protocol: "http",
+        hostname: "localhost",
+        port: "9000",
         //  open: {
         //      // target: 'http://localhost:9000', NW!
         //      // name of the app that opens, ie: open, start, xdg-open
@@ -26,10 +26,7 @@ module.exports = {
              */
             middleware: function (connect) {
                 return [
-                    // TODO: (@jvorisek) - Why the templates do not work here, .e.g. <%= pkg.paths.app%>
                     // connect.static(".tmp"),
-                    connect().use("/i18n", connect.static("./i18n")),
-                    connect().use("/styles", connect.static("./styles")),
                     connect.static("build")
                 ];
             }
@@ -37,7 +34,7 @@ module.exports = {
     },
     prodlocal: {
         options: {
-            base: "<%= cfg.paths.build %>",
+            base: "build",
 
             /**
              * middleware connect - prod ONLY FOR THEME
@@ -47,7 +44,6 @@ module.exports = {
              */
             middleware: function (connect) {
                 return [
-                    connect().use("/styles", connect.static("./<%= cfg.paths.theme %>")),
                     connect.static("build")
                 ];
             }
@@ -55,7 +51,7 @@ module.exports = {
     },
     distlocal: {
         options: {
-            base: "<%= cfg.paths.build %>",
+            base: "build",
 
             /**
              * middleware connect - dist ONLY FOR THEME
@@ -65,7 +61,6 @@ module.exports = {
              */
             middleware: function (connect) {
                 return [
-                    connect().use("/styles", connect.static("./<%= cfg.paths.theme %>")),
                     connect.static("build")
                 ];
             }

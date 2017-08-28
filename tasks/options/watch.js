@@ -10,27 +10,27 @@ module.exports = {
         // livereload: true
     },
     scripts: {
-        files: ["app/**/*.js"],
+        files: ['app/**/*.js'],
         tasks: [
-            "jshint",
-            "concat",
-            "ngAnnotate:dev",
-            "copy:dev"
+            'jshint',
+            'concat',
+            'ngAnnotate:dev',
+            'copy:dev'
         ],
         options: {
             spawn: false
         }
     },
     gruntfile: {
-        files: ["gruntfile.js"]
+        files: ['gruntfile.js']
 
     },
     html: {
         files: [
-            "app/{,**/}*.html"
+            'app/{,**/}*.html'
         ],
         tasks: [
-            "copy:dev"
+            'copy:dev'
         ],
         options: {
             reload: true
@@ -39,11 +39,20 @@ module.exports = {
     devlocal: {
         options: {
             // https://github.com/gruntjs/grunt-contrib-watch#optionslivereload
-            livereload: "<%= cfg.env.livereload %>"
+            livereload:  {
+                'host': 'localhost',
+                'port': '35729',
+                'options': {
+                    'open': true,
+                    'base': [
+                        '.app'
+                    ]
+                }
+            }
         },
         files: [
-            "./{,*/}*.html",
-            ".tmp/_assets/css/{,*/}*.css"
+            './{,*/}*.html',
+            '.tmp/_assets/css/{,*/}*.css'
         ]
     }
 };
