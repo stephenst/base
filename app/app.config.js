@@ -81,12 +81,12 @@
     function configure($stateProvider, $urlRouterProvider, $httpProvider) {
 
         $httpProvider.interceptors.push(intercept);
-
-        // For any unmatched url, redirect to /state1
+        //  // For any unmatched url, redirect to /state1
         $urlRouterProvider.otherwise(function ($injector) {
             var $state = $injector.get('$state');
+            console.log('State: ', $state);
             // No need to specify default options
-            $state.go('/', {}, {reload: true});
+            $state.go('scenarios', {}, {reload: true});
         });
 
         /**
@@ -119,73 +119,73 @@
          *
          * @see https://github.com/angular-ui/ui-router, https://github.com/angular-ui/ui-router/wiki
          */
-        $stateProvider.state({
-            name: 'default',
-            url: '',
-            // templateUrl: 'components/charts/templates/line.html',
-            // controller: 'LineController',
+        $stateProvider.state("root", {
+            name: "root",
+            url: "",
             views: {
-                'primary.nav': {
-                    templateUrl: 'components/scenario/templates/scenario.html',
-                    controller: 'ScenarioController'
+                'navigation.global': {
+                    templateUrl: 'layout/layout.html',
+                    controller: 'LayoutController',
+                    controllerAs: "vm"
+                },
+                'main.content': {
+                    templateUrl: 'components/scenario/scenario.html',
+                    controller: 'ScenarioController',
+                    controllerAs: "vm"
                 }
-            },
-            resolve: {
-                /**
-                 * @ngdoc method
-                 * @name initRootState
-                 * @memberof metal.config.states
-                 * @summary
-                 * A handy resolve to indicate all the resolves in root state are completed.
-                 * That way in future if there is a new root state resolve added, no need to update all the
-                 * child states' code to use the last resolve. All you need to do is update the injection in here.
-                 *
-                 * @description
-                 * NOTE: The following resolve keys MUST still be injected into the child states if you want to wait for the promises to be resolved
-                 * before instantiating the children. The advantage of defining at root level resolve is that we need not duplicate the resolve code.
-                 * Any child state that depends on user being logged in (which must be ALL) should inject the last resolve in the chain - initRootState
-                 * to ensure the app root state is set before child state is instantiated. This is especially needed when user directly navigates to the
-                 * child state url from a bookmark.
-                 *
-                 * @requires {@link app.core.logger}
-                 */
-                initRootState: ['', function () {
-                    console.log('Default/Root state resolved');
-                }]
             }
-        });
-        $stateProvider.state({
+        }).state(
+            {
+                name: "scenarios",
+                parent: "root",
+                url: "/scenarios",
+                params: {
+                    title: {
+                        squash: true
+                    },
+                    message: {
+                        squash: true
+                    },
+                    welcome: {
+                        squash: true
+                    }
+                },
+                views: {
+                    "main.content@": {
+                        templateUrl: 'components/scenario/scenario.html',
+                        controller: 'ScenarioController',
+                        controllerAs: "vm"
+                    }
+                }
+            }
+        ).state({
             name: 'stock',
             parent: 'default',
             url: '/stock',
             templateUrl: 'components/stock/templates/stock.template',
             controller: 'StockController'
-        });
-        $stateProvider.state({
+        }).state({
             name: 'boxplot',
             url: '/boxplot',
             templateUrl: 'components/charts/templates/boxplot.html',
             controller: 'BoxPlotController'
-        });
-        $stateProvider.state({
+        }).state({
             name: 'line',
             url: '/line',
             templateUrl: 'components/charts/templates/line.html',
             controller: 'LineController'
-        });
-        $stateProvider.state({
+        }).state({
             name: 'pie',
             url: '/pie',
             templateUrl: 'components/charts/templates/pie.html',
             controller: 'PieController'
-        });
-        $stateProvider.state({
+        }).state({
             name: 'scenario',
             url: '/scenario',
             templateUrl: 'components/scenario/templates/scenario.html',
             controller: 'ScenarioController'
         });
-        $urlRouterProvider.otherwise('/');
+        // $urlRouterProvider.otherwise('/');
     }
 
 })();

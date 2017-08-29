@@ -20,29 +20,10 @@
         'ngResource',
         'ui.router',
         'ui.bootstrap',
+        'metal.layout',
         'metal.cesium',
         'metal.charts',
         'metal.scenario',
         'metal.stock'
-    ]).run(function ($rootScope) {
-        $rootScope.viewer = new Cesium.Viewer('cesiumContainer', {
-            animation: false,
-            timeline: false,
-            baseLayerPicker: false,
-            fullscreenButton: false,
-            geocoder: false,
-            homeButton: false,
-            infoBox: true,
-            sceneModePicker: true,
-            sceneMode: Cesium.SceneMode.SCENE2D,
-            selectionIndicator: true,
-            navigationHelpButton: false,
-            navigationInstructionsInitiallyVisible: false,
-            scene3Donly: true
-//         imageryProvider: new Cesium.ArcGisMapServerImageryProvider({
-//             url : 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
-//          })
-        });
-        $rootScope.server_port = '8070';
-    });
+    ]);
 })();

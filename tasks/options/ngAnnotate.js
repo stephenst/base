@@ -8,9 +8,9 @@ module.exports = {
             'build/app.js': [
                 'app/app.js',
                 'app/app.+(config|constants).js',
-                'app/components/**/*.module.js',
-                'app/components/**/*.+(controller|service|factory|directive|filter).js',
-                '!app/components/**/*spec.js',
+                'app/+(layout|components)/**/*.module.js',
+                'app/+(layout|components)/**/*.+(controller|service|factory|directive|filter).js',
+                '!app/+(layout|components)/**/*spec.js',
                 '!app/_assets/bower/',
                 '!app/_assets/js/'
             ]

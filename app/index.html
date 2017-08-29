@@ -1,12 +1,4 @@
-<!DOCTYPE html ng-app="metal">
-<!--[if lt IE 7]>
-<html lang="en" ng-app="metal" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>
-<html lang="en" ng-app="metal" class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>
-<html lang="en" ng-app="metal" class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!-->
-<html lang="en" ng-app="metal" class="no-js"> <!--<![endif]-->
+<!DOCTYPE html>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,12 +9,12 @@
     <link rel="stylesheet" href="_assets/bower/html5-boilerplate/dist/css/normalize.css">
     <link rel="stylesheet" href="_assets/bower/html5-boilerplate/dist/css/main.css">
     <link rel="stylesheet" href="_assets/bower/nvd3/build/nv.d3.css"/>
-    <link rel="stylesheet" href="app.css">
     <link rel="stylesheet" href="_assets/css/app.css"/>
     <script src="_assets/bower/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
     <link rel="stylesheet" href="_assets/bower/jqwidgets/jqwidgets/styles/jqx.base.css" type="text/css"/>
     <link rel="stylesheet" href="_assets/bower/cesium/CesiumUnminified/Widgets/widgets.css" type="text/css"/>
     <link rel="stylesheet" href="_assets/bower/openlayers3/build/ol.css" type="text/css"/>
+    <link rel="stylesheet" href="_assets/bower/angular-bootstrap/ui-bootstrap-csp.css" type="text/css"/>
     <style type="text/css">
         .jqx-layout-group-auto-hide-content-vertical {
             width: 400px;
@@ -34,82 +26,12 @@
         }
     </style>
 </head>
-<body ng-controller="ScenarioController">
-
-<!--[if lt IE 7]>
-<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
-    your browser</a> to improve your experience.</p>
-<![endif]-->
-<div>
-    <div class="dropdown">
-        <span>&#9776;</span>
-        <div class="dropdown-content">
-            <a ng-repeat="scenario in scenarios" href="javascript:void(0);" ng-click="getScenario(scenario.name)">{{
-                scenario.name }}</a>
-        </div>
-    </div>
-    <div>
-        <button id="exportBtn" ng-click="export($event)" style="float: right; position: relative; padding-right: 10px;">
-            Save
-        </button>
-        <button id="importBtn" ng-click="import($event)" style="display:none"> Import</button>
-    </div>
-    <div id="docking">
-        <div>
-            <div id="cesium_window">
-                <div>Cesium</div>
-                <div id="cesiumContainer"></div>
-            </div>
-            <div id="graph_window">
-                <div>Graph</div>
-                <nvd3 options="options" data="data"></nvd3>
-            </div>
-            <!--
-            <div id="openlayer_window">
-                <div>Open Layer</div>
-                <openlayers width="100%" height="200px"></openlayers>
-            </div>
-            -->
-        </div>
-    </div>
+<body>
+<div ng-app="metal">
+    <div ui-view="navigation.global"></div>
+    <div ui-view="main.content"></div>
 </div>
 
-<!-- <div ng-view></div> -->
-<!-- The dynamic templates will be served within this div -->
-<!-- <ui-view></ui-view> -->
-
-<!--
-
-
- <div id="docking">
-    <div>
-        <div id="window1">
-            <div>Line Chart</div>
-            <div ng-controller="StockController">
-                <nvd3 options="options" data="data"></nvd3>
-            </div>
-        </div>
-        <div id="window2">
-            <div>Pie Chart</div>
-           <div ng-controller="PieController">
-            <nvd3 options="options" data="data"></nvd3>
-            </div>
-        </div>
-         <div id="window3">
-            <div>Box Plot</div>
-            <div ng-controller="BoxPlotController">
-                <nvd3 options="options" data="data" class="with-3d-shadow with-transitions"></nvd3>
-             </div>
-         </div>
-        <div id="window4">
-            <div>Cesium</div>
-             <div id="cesiumContainer" ></div>
-
-         </div>
-
-    </div>
-</div>
--->
 
 <!--  Angular Setup -->
 <script src="_assets/bower/angular/angular.js"></script>
@@ -120,9 +42,9 @@
 <script src="_assets/bower/d3/d3.js"></script>
 <script src="_assets/bower/nvd3/build/nv.d3.js"></script> <!-- or use another assembly -->
 <script src="_assets/bower/angular-nvd3/dist/angular-nvd3.js"></script>
+<script src="_assets/bower/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 
 <!-- jqWidgets -->
-
 <script type="text/javascript" src="_assets/bower/jqwidgets/scripts/jquery-1.11.1.min.js"></script>
 <!-- <script type="text/javascript" src="bower_components/jqwidgets/scripts/angular.min.js"></script> -->
 <script type="text/javascript" src="_assets/bower/jqwidgets/scripts/demos.js"></script>
@@ -152,13 +74,7 @@
         src="_assets/bower/angular-openlayers-directive/dist/angular-openlayers-directive.min.js"></script>
 
 <script type="text/javascript" src="app.js"></script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        // Create jqxDocking
-        $("#docking").jqxDocking({width: 250, theme: 'classic'});
-        $("#importBtn").click();
-    });
-</script>
+
 
 </body>
 </html>
