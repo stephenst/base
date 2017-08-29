@@ -1,10 +1,7 @@
 logs/*
-app/_assets/bower
-app/_assets/bower/*
-!.gitkeep
+app/_assets/bower/
 node_modules/
 bower_components/
-bower
 build/*
 tmp
 .DS_Store
