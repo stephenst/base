@@ -19,6 +19,7 @@ module.exports = {
             "node_modules/angular-nvd3/dist/angular-nvd3.js",
             "node_modules/angular-openlayers-directive/dist/angular-openlayers-directive.js",
             "node_modules/cesium/Build/CesiumUnminified/Cesium.js",
+            "node_modules/jqwidgets-framework/jqwidgets/jqwidgets/jqx-all.js",
             "node_modules/jqwidgets-framework/jqwidgets/scripts/demos.js",
             "node_modules/jqwidgets-framework/jqwidgets/jqwidgets/jqxcore.js",
             "node_modules/jqwidgets-framework/jqwidgets/jqwidgets/jqxbuttons.js",

@@ -31,8 +31,15 @@
         cwd: "app",
         dest: "build",
         src: [
-            "**/*.{ico,png,jpg,gif,html,css,json,md}",
-            "!**/bower/**"
+            "**/*.{ico,png,jpg,gif,html,css,json,md}"
+        ]
+    }, {
+        expand: true,
+        dot: false,
+        cwd: "app/_assets/bower/",
+        dest: "build/_assets/bower/",
+        src: [
+            "{,**/}*.js"
         ]
     }, {
         expand: true,
@@ -99,7 +106,6 @@
         },
         sourceHTML: {
             options: {
-                noProcess: "app/_assets/bower"
             },
             files: [
                 {
@@ -108,8 +114,7 @@
                     cwd: "app",
                     dest: "build",
                     src: [
-                        "**/*.html",
-                        "!**/bower/**"
+                        "**/*.html"
                     ]
                 }
             ]

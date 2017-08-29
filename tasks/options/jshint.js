@@ -1,3 +1,3 @@
 module.exports = {
-    devlocal: ["app/**/*.js", "!app/bower_components/**/*.js"]
+    devlocal: ["app/**/*.js", "!app/_assets/bower/**/*.js"]
 };

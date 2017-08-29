@@ -1,8 +1,11 @@
 logs/*
+app/_assets/bower
+app/_assets/bower/*
 !.gitkeep
 node_modules/
 bower_components/
-build/
+bower
+build/*
 tmp
 .DS_Store
 .idea

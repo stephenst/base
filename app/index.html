@@ -14,7 +14,20 @@
     <meta name="description" content="Metal app">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="_assets/css/vendor.css"/>
+    <link rel="stylesheet" href="_assets/bower/html5-boilerplate/dist/css/normalize.css">
+    <link rel="stylesheet" href="_assets/bower/html5-boilerplate/dist/css/main.css">
+    <link rel="stylesheet" href="_assets/bower/nvd3/build/nv.d3.css"/>
+    <link rel="stylesheet" href="app.css">
     <link rel="stylesheet" href="_assets/css/app.css"/>
+    <script src="_assets/bower/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
+    <link rel="stylesheet" href="_assets/bower/jqwidgets/jqwidgets/styles/jqx.base.css" type="text/css"/>
+    <link rel="stylesheet" href="_assets/bower/cesium/CesiumUnminified/Widgets/widgets.css" type="text/css"/>
+    <link rel="stylesheet" href="_assets/bower/openlayers3/build/ol.css" type="text/css"/>
+    <style type="text/css">
+        .jqx-layout-group-auto-hide-content-vertical {
+            width: 400px;
+        }
+    </style>
     <style type="text/css">
         .jqx-layout-group-auto-hide-content-vertical {
             width: 400px;
@@ -98,7 +111,46 @@
 </div>
 -->
 
-<script type="text/javascript" src="_assets/js/vendor.js"></script>
+<!--  Angular Setup -->
+<script src="_assets/bower/angular/angular.js"></script>
+<script src="_assets/bower/angular-ui-router/release/angular-ui-router.js"></script>
+<script src="_assets/bower/angular-resource/angular-resource.min.js"></script>
+
+<!-- angular-nvd3 -->
+<script src="_assets/bower/d3/d3.js"></script>
+<script src="_assets/bower/nvd3/build/nv.d3.js"></script> <!-- or use another assembly -->
+<script src="_assets/bower/angular-nvd3/dist/angular-nvd3.js"></script>
+
+<!-- jqWidgets -->
+
+<script type="text/javascript" src="_assets/bower/jqwidgets/scripts/jquery-1.11.1.min.js"></script>
+<!-- <script type="text/javascript" src="bower_components/jqwidgets/scripts/angular.min.js"></script> -->
+<script type="text/javascript" src="_assets/bower/jqwidgets/scripts/demos.js"></script>
+<script type="text/javascript" src="_assets/bower/jqwidgets/jqwidgets/jqxcore.js"></script>
+<script type="text/javascript" src="_assets/bower/jqwidgets/jqwidgets/jqxbuttons.js"></script>
+<script type="text/javascript" src="_assets/bower/jqwidgets/jqwidgets/jqxscrollbar.js"></script>
+<script type="text/javascript" src="_assets/bower/jqwidgets/jqwidgets/jqxdata.js"></script>
+<script type="text/javascript" src="_assets/bower/jqwidgets/jqwidgets/jqxmenu.js"></script>
+<script type="text/javascript" src="_assets/bower/jqwidgets/jqwidgets/jqxtooltip.js"></script>
+<script type="text/javascript" src="_assets/bower/jqwidgets/jqwidgets/jqxlistbox.js"></script>
+<script type="text/javascript" src="_assets/bower/jqwidgets/jqwidgets/jqxdropdownlist.js"></script>
+<script type="text/javascript" src="_assets/bower/jqwidgets/jqwidgets/jqxnumberinput.js"></script>
+<script type="text/javascript" src="_assets/bower/jqwidgets/jqwidgets/jqxradiobutton.js"></script>
+<script type="text/javascript" src="_assets/bower/jqwidgets/jqwidgets/jqxinput.js"></script>
+<script type="text/javascript" src="_assets/bower/jqwidgets/jqwidgets/jqxcore.js"></script>
+<script type="text/javascript" src="_assets/bower/jqwidgets/jqwidgets/jqxribbon.js"></script>
+<script type="text/javascript" src="_assets/bower/jqwidgets/jqwidgets/jqxlayout.js"></script>
+<script type="text/javascript" src="_assets/bower/jqwidgets/jqwidgets/jqxdocking.js"></script>
+<script type="text/javascript" src="_assets/bower/jqwidgets/jqwidgets/jqxdockinglayout.js"></script>
+<script type="text/javascript" src="_assets/bower/jqwidgets/jqwidgets/jqxtree.js"></script>
+<script type="text/javascript" src="_assets/bower/jqwidgets/jqwidgets/jqxwindow.js"></script>
+<script type="text/javascript" src="_assets/bower/jqwidgets/jqwidgets/jqxangular.js"></script>
+<script type="text/javascript" src="_assets/bower/cesium/Cesium/Cesium.js"></script>
+<script type="text/javascript" src="_assets/bower/openlayers3/build/ol.js"></script>
+<script type="text/javascript" src="_assets/bower/angular-sanitize/angular-sanitize.min.js"></script>
+<script type="text/javascript"
+        src="_assets/bower/angular-openlayers-directive/dist/angular-openlayers-directive.min.js"></script>
+
 <script type="text/javascript" src="app.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
