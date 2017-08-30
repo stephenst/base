@@ -6,7 +6,8 @@
             <div class="navbar-header">
                 <a ui-sref="root" aria-label="BOILERPLATE LABEL" title="Boilerplate" class="navbar-brand app-brand"></a>
                 <button type="button" ng-click="vm.isCollapsed = !vm.isCollapsed" class="navbar-toggle">
-                    <span translate class="sr-only">Toggle navigation</span><span class="icon-bar"></span>
+                    <span translate class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
@@ -15,12 +16,13 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li uib-dropdown uib-keyword-nav class="dropdown">
                         <a id="global-nav-user-dropdown" uib-dropdown-toggle href="" aria-label="vm.userDropdownAriaLabel" class="active">
-                            <span class="fa fa-file-code-o"></span>Scenarios<span class="fa fa-caret-down"></span>
+                            <i class="fa fa-map-o"></i> Scenarios
+                            <i class="fa fa-caret-down"></i>
                         </a>
                         <ul role="menu" aria-labelledby="global-nav-user-dropdown" class="uib-dropdown-menu dropdown-menu-global-nav">
                             <li class="menuitem">
-                                <a href="" ng-repeat="scenario in scenarios" ng-click="getScenario(scenario.name)">
-                                    <span class="icon icon-oldapp"></span> {{ scenario.name }}
+                                <a href="" ng-repeat="scenario in vm.scenarios" ng-click="getScenario(scenario.name)">
+                                    <span class="fa fa-map-marker"></span> {{ scenario.name }}
                                 </a>
                             </li>
                         </ul>

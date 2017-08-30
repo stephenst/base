@@ -40,16 +40,16 @@
                 selectionIndicator: true,
                 navigationHelpButton: false,
                 navigationInstructionsInitiallyVisible: false,
-                scene3Donly: true
-//         imageryProvider: new Cesium.ArcGisMapServerImageryProvider({
-//             url : 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
-//          })
+                scene3Donly: false
+                // imageryProvider: new Cesium.ArcGisMapServerImageryProvider({
+                //    url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
+                // })
             });
             $rootScope.server_port = '8070';
 
             // Create jqxDocking
-            $("#docking").jqxDocking({width: 250, theme: 'classic'});
-            $("#importBtn").click();
+            // $("#docking").jqxDocking({width: 250, theme: 'classic'});
+            // $("#importBtn").click();
         }
 
         var earthradius = 3440.2769;
@@ -110,11 +110,6 @@
                 console.log("model run for scenario:" + scenarioName);
             });
         };
-
-        ScenarioFactory.getScenarios().query().$promise.then(function (data) {
-            console.log("Scenario Controller query")
-            $scope.scenarios = data;
-        });
 
         $scope.options = {
             chart: {

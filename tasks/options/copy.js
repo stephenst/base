@@ -60,8 +60,8 @@
     }, {
         expand: true,
         dot: false,
-        cwd: "node_modules/font-awesome/fonts/",
-        dest: "build/_assets/fonts/",
+        cwd: "app/_assets/bower/font-awesome/fonts/",
+        dest: "build/_assets/bower/font-awesome/fonts/",
         src: [
             "{,**/}*.{otf,eot,svg,ttf,woff,woff2}"
         ]

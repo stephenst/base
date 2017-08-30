@@ -5,7 +5,7 @@
         .module('metal.layout')
         .controller('LayoutController', LayoutController);
 
-    LayoutController.$inject = [];
+    LayoutController.$inject = ['ScenarioFactory'];
 
     /**
      * @ngdoc controller
@@ -15,7 +15,7 @@
      * @requires {Function} logger
      * @constructor
      */
-    function LayoutController () {
+    function LayoutController (ScenarioFactory) {
         var vm = this;
 
         activate();
@@ -30,6 +30,11 @@
             console.log('LayoutController activated');
             vm.IsCollapsed = true;
             vm.username = 'Metal User';
+
+            ScenarioFactory.getScenarios().query().$promise.then(function (data) {
+                console.log("Scenario Controller query";
+                vm.scenarios = data;
+            });
         }
     }
 })();
