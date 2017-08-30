@@ -194,6 +194,7 @@
                 var site = e;
                 var ll = nmToLatLon(site.latitude, site.longitude);
                 var assetresourcetable = 'none';
+                var ares;
                 if (e.asset.asset_resources.length > 0) {
                     assetresourcetable = '<br><table><tr><td>Resource</td><td>Congested Consumption</td><td>Uncongested Consumption</td></tr>';
                     for (var ar = 0; ar < e.asset.asset_resources.length; ar++) {
@@ -277,6 +278,7 @@
                     asset_assignments = asset_assignments + '<td>' + data.resources[r].name + '</td>';
                 }
                 asset_assignments = asset_assignments + '</tr>';
+                var ares;
                 for (var j = 0; j < route.asset_route_assignments.length; j++) {
                     var assetinv = route.asset_route_assignments[j];
                     var asset = assetinv.asset;
