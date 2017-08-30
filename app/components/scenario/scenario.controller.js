@@ -52,6 +52,11 @@
             // $("#importBtn").click();
         }
 
+        $rootScope.$on('loadScenario', function (event, name) {
+            console.log('caught the $emit of ', name);
+            $scope.getScenario(name);
+        });
+
         var earthradius = 3440.2769;
         var sqrt3 = Math.sqrt(3);
 

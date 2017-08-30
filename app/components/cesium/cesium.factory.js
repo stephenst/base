@@ -5,7 +5,7 @@
         .module("metal.cesium")
         .factory("CesiumFactory", CesiumFactory);
 
-    CesiumFactory.$inject = [];
+    CesiumFactory.$inject = ['$resource'];
 
     /**
      * @ngdoc service

@@ -5,7 +5,7 @@
         .module('metal.layout')
         .controller('LayoutController', LayoutController);
 
-    LayoutController.$inject = ['ScenarioFactory'];
+    LayoutController.$inject = ['$rootScope', 'ScenarioFactory'];
 
     /**
      * @ngdoc controller
@@ -15,7 +15,7 @@
      * @requires {Function} logger
      * @constructor
      */
-    function LayoutController (ScenarioFactory) {
+    function LayoutController ($rootScope, ScenarioFactory) {
         var vm = this;
 
         activate();
@@ -32,10 +32,14 @@
             vm.username = 'Metal User';
 
             ScenarioFactory.getScenarios().query().$promise.then(function (data) {
-                console.log("Scenario Controller query";
+                console.log("Scenario Controller query");
                 vm.scenarios = data;
             });
         }
+
+        vm.getScenario = function (name) {
+            $rootScope.$emit('loadScenario', name);
+        };
     }
 })();
 

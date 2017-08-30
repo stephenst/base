@@ -21,7 +21,7 @@
                         </a>
                         <ul role="menu" aria-labelledby="global-nav-user-dropdown" class="uib-dropdown-menu dropdown-menu-global-nav">
                             <li class="menuitem">
-                                <a href="" ng-repeat="scenario in vm.scenarios" ng-click="getScenario(scenario.name)">
+                                <a href="" ng-repeat="scenario in vm.scenarios" ng-click="vm.getScenario(scenario.name)">
                                     <span class="fa fa-map-marker"></span> {{ scenario.name }}
                                 </a>
                             </li>
