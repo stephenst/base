@@ -14,12 +14,12 @@
             </div>
             <div id="global-navbar-menu" uib-collapse="vm.isCollapsed" class="collapsed collapse navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <li uib-dropdown uib-keyword-nav class="dropdown">
+                    <li uib-dropdown keyword-nav class="dropdown">
                         <a id="global-nav-user-dropdown" uib-dropdown-toggle href="" aria-label="vm.userDropdownAriaLabel" class="active">
                             <i class="fa fa-map-o"></i> Scenarios
                             <i class="fa fa-caret-down"></i>
                         </a>
-                        <ul role="menu" aria-labelledby="global-nav-user-dropdown" class="uib-dropdown-menu dropdown-menu-global-nav">
+                        <ul role="menu" aria-labelledby="global-nav-user-dropdown" class="uib-dropdown-menu dropdown-menu-global-nav" uib-dropdown-menu>
                             <li class="menuitem">
                                 <a href="" ng-repeat="scenario in vm.scenarios" ng-click="vm.getScenario(scenario.name)">
                                     <span class="fa fa-map-marker"></span> {{ scenario.name }}
