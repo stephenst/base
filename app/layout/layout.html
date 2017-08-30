@@ -1,0 +1,34 @@
+
+<div id="nav-header-wrapper" class="nav-header-wrapper">
+    <div growl reference="globalSystemNotificationId" inline="true" class="global-system-notification"></div>
+    <nav id="global-nav" class="navbar-default navbar-global">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a ui-sref="root" aria-label="BOILERPLATE LABEL" title="METAL" class="navbar-brand app-brand">METAL</a>
+                <button type="button" ng-click="vm.isCollapsed = !vm.isCollapsed" class="navbar-toggle">
+                    <span translate class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div id="global-navbar-menu" uib-collapse="vm.isCollapsed" class="collapsed collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li uib-dropdown keyword-nav class="dropdown">
+                        <a id="global-nav-user-dropdown" uib-dropdown-toggle href="" aria-label="vm.userDropdownAriaLabel" class="active">
+                            <i class="fa fa-map-o"></i> Scenarios
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                        <ul role="menu" aria-labelledby="global-nav-user-dropdown" class="uib-dropdown-menu dropdown-menu-global-nav" uib-dropdown-menu>
+                            <li class="menuitem">
+                                <a href="" ng-repeat="scenario in vm.scenarios" ng-click="vm.getScenario(scenario.name)">
+                                    <span class="fa fa-map-marker"></span> {{ scenario.name }}
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>

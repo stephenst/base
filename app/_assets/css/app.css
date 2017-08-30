@@ -1,0 +1,43 @@
+
+body {
+    margin: 0;
+}
+
+#docking {
+    background-color: #e6e6e6;
+}
+
+.body {
+    margin: 0;
+}
+
+#global-nav {
+    background-color: #323942;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+    color: #1faeff;
+}
+
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .open > a:focus {
+    background-color: #4b505a;
+    color: #fff;
+}
+
+.dropdown-menu {
+    background-color: #3e434b;
+    color: #1faeff;
+}
+
+.dropdown-menu > li > a {
+    color: #1faeff;
+}
+
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+    background-color: #4b505a;
+    color: #fff;
+}
