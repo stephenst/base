@@ -17,6 +17,8 @@
      */
     function ScenarioController($rootScope, $scope, ScenarioFactory, ChartsFactory, CesiumFactory, StockFactory) {
         var vm = this;
+        $scope.data = [];
+
         activate();
 
         /**
@@ -40,11 +42,22 @@
                 selectionIndicator: true,
                 navigationHelpButton: false,
                 navigationInstructionsInitiallyVisible: false,
-                scene3Donly: false
+                scene3Donly: false,
+                imageryProvider: new Cesium.createOpenStreetMapImageryProvider({
+                    url: 'https://a.tile.openstreetmap.org'
+                })
                 // imageryProvider: new Cesium.ArcGisMapServerImageryProvider({
-                //    url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
+                //     url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
                 // })
             });
+            var layers = $rootScope.viewer.scene.imageryLayers;
+            var blackMarble = $rootScope.viewer.addImageryProvider(new Cesium.TileMapServiceImageryProvider({
+                url : '//cesiumjs.org/tilesets/imagery/blackmarble',
+                maximumLevel : 8,
+                credit : 'Black Marble imagery courtesy NASA Earth Observatory'
+            }));
+            blackMarble.alpha = 0.5;
+            blackMarble.brightness = 2.0;
             $rootScope.server_port = '8070';
 
             // Create jqxDocking
@@ -56,6 +69,47 @@
             console.log('caught the $emit of ', name);
             $scope.getScenario(name);
         });
+
+        $scope.getScenario = function (scenarioName) {
+
+            //$scope.run_model(scenarioName);
+            //$scope.getRoutes(scenarioName);
+            //$scope.data = [{ key: "Some key", values:[{"label":"77", "value":"22.0"}]}];
+            ScenarioFactory.getScenarios().get({id: scenarioName}, function (data) {
+
+            });
+
+            ChartsFactory.getTimeToFailure().get({id: scenarioName}).$promise.then(function (data) {
+                console.log("In Line Factory");
+                var chartKey = data.key;
+                var chartDataStr = data.data;
+                var jsonChartData = angular.fromJson(chartDataStr);
+                $scope.data = [
+                    {
+                        key: chartKey,
+                        values: jsonChartData
+                    }
+                ];
+            }).then(function () {
+                CesiumFactory.getMapData().get({id: scenarioName}).$promise.then(function (data) {
+                    console.log('Cesium Factory; data follows :', data);
+                    // clear the existing map
+                    $rootScope.viewer.entities.removeAll();
+                    // create entities from the map data
+                    $scope.selectedScenario = createCesiumMapEntities(data);
+                    // add entities to the map
+                    $scope.selectedScenario.forEach(function (e) {
+                        $rootScope.viewer.entities.add(e);
+                    });
+                    // zoom into entity location
+                    $rootScope.viewer.flyTo($rootScope.viewer.entities, {
+                        duration: 5,
+                        maxiumHeight: 500
+                    });
+                });
+            });
+
+        };
 
         var earthradius = 3440.2769;
         var sqrt3 = Math.sqrt(3);
@@ -145,46 +199,6 @@
                     axisLabelDistance: -10
                 }
             }
-        };
-        $scope.data = [];
-
-        $scope.getScenario = function (scenarioName) {
-
-            //$scope.run_model(scenarioName);
-            //$scope.getRoutes(scenarioName);
-            //$scope.data = [{ key: "Some key", values:[{"label":"77", "value":"22.0"}]}];
-            ScenarioFactory.getScenarios().get({id: scenarioName}, function (data) {
-
-            });
-
-            ChartsFactory.getTimeToFailure().get({id: scenarioName}).$promise.then(function (data) {
-                console.log("In Line Factory");
-                var chartKey = data.key;
-                //console.log(chartKey);
-                var chartDataStr = data.data;
-                var jsonChartData = angular.fromJson(chartDataStr);
-                $scope.data = [
-                    {
-                        key: chartKey,
-                        values: jsonChartData
-                    }
-                ];
-            }).then(function () {
-                CesiumFactory.getMapData().get({id: scenarioName}).$promise.then(function (data) {
-                    console.log("Cesium Factory");
-                    // clear the existing map
-                    $rootScope.viewer.entities.removeAll();
-                    // create entities from the map data
-                    $scope.selectedScenario = createCesiumMapEntities(data);
-                    // add entities to the map
-                    $scope.selectedScenario.forEach(function (e) {
-                        $rootScope.viewer.entities.add(e);
-                    });
-                    // zoom into entity location
-                    $rootScope.viewer.zoomTo($rootScope.viewer.entities);
-                });
-            });
-
         };
 
         var createCesiumMapEntities = function (data) {
